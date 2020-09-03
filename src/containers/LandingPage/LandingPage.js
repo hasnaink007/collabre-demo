@@ -17,6 +17,8 @@ import {
   LayoutWrapperMain,
   LayoutWrapperFooter,
   Footer,
+  SectionPropertyType,
+  SectionSubCats
 } from '../../components';
 import { TopbarContainer } from '../../containers';
 
@@ -37,8 +39,10 @@ export const LandingPageComponent = props => {
   // Schema for search engines (helps them to understand what this page is about)
   // http://schema.org
   // We are using JSON-LD format
-  const siteTitle = config.siteTitle;
-  const schemaTitle = intl.formatMessage({ id: 'LandingPage.schemaTitle' }, { siteTitle });
+  // const siteTitle = config.siteTitle;
+  const siteTitle = 'CollabRe';
+  const schemaTitle = 'CollabRe';
+  // const schemaTitle = intl.formatMessage({ id: 'LandingPage.schemaTitle' }, { siteTitle });
   const schemaDescription = intl.formatMessage({ id: 'LandingPage.schemaDescription' });
   const schemaImage = `${config.canonicalRootURL}${facebookImage}`;
 
@@ -65,7 +69,7 @@ export const LandingPageComponent = props => {
         <LayoutWrapperTopbar>
           <TopbarContainer />
         </LayoutWrapperTopbar>
-        <LayoutWrapperMain>
+        <LayoutWrapperMain className={css.mainWrapper}>
           <div className={css.heroContainer}>
             <SectionHero className={css.hero} history={history} location={location} />
           </div>
@@ -75,12 +79,26 @@ export const LandingPageComponent = props => {
                 <SectionLocations />
               </div>
             </li>
+
+            <li className={css.section}>
+              <div className={css.sectionContentFirstChild}>
+                <SectionPropertyType />
+              </div>
+            </li>
+
+            <li className={css.section}>
+              <div className={css.sectionContentFirstChild}>
+                <SectionSubCats />
+              </div>
+            </li>
+
+
             <li className={css.section}>
               <div className={css.sectionContent}>
-                <SectionHowItWorks
+                {/* <SectionHowItWorks
                   currentUserListing={currentUserListing}
                   currentUserListingFetched={currentUserListingFetched}
-                />
+                /> */}
               </div>
             </li>
           </ul>

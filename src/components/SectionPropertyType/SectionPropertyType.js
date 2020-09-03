@@ -6,11 +6,11 @@ import { lazyLoadWithDimensions } from '../../util/contextHelpers';
 
 import { NamedLink } from '../../components';
 
-import css from './SectionLocations.css';
+import css from './SectionPropertyType.css';
 
-import nyImage from './images/1.jpg';
-import laImage from './images/2.jpg';
-import sfImage from './images/3.jpg';
+import fhimage from './images/4.jpg';
+import appimage from './images/5.jpg';
+import vimage from './images/6.jpg';
 
 class LocationImage extends Component {
   render() {
@@ -25,29 +25,23 @@ const locationLink = (name, image, searchQuery) => {
   return (
     <NamedLink name="SearchPage" to={{ search: searchQuery }} className={css.location}>
       <div className={css.imageWrapper}>
-        <div className={css.aspectWrapper} style={{backgroundImage:`url(${image})`}} >
-          {/* <LazyImage src={image} alt={name} className={css.locationImage} /> */}
-          <div>
-              <h1 className={css.boxStyle}>
-                <FormattedMessage
-                  id="SectionLocations.listingsInLocation"
-                  values={{ location: nameText }}
-                />
-              </h1>
-          </div>
+        <div className={css.aspectWrapper}>
+          <LazyImage src={image} alt={name} className={css.locationImage} />
         </div>
       </div>
-      {/* <div className={css.linkText}>
-        <FormattedMessage
+      <div className={css.linkText}>
+        {/* <FormattedMessage
           id="SectionLocations.listingsInLocation"
           values={{ location: nameText }}
-        />
-      </div> */}
+        />  */}
+
+        <span style={{color:'#f72a85'}}>{name}</span>
+      </div>
     </NamedLink>
   );
 };
 
-const SectionLocations = props => {
+const SectionPropertyType = props => {
   const { rootClassName, className } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -55,22 +49,24 @@ const SectionLocations = props => {
   return (
     <div className={classes}>
       <div className={css.title}>
-        <FormattedMessage id="SectionLocations.title" />
+        {/* <FormattedMessage id="SectionLocations.title" /> */}
+        Search by Property Types
+
       </div>
       <div className={css.locations}>
         {locationLink(
-          'USA',
-          nyImage,
+          'Appartments',
+          appimage,
           '?address=New%20York%20City%2C%20New%20York%2C%20USA&bounds=40.917576401307%2C-73.7008392055224%2C40.477399%2C-74.2590879797556'
         )}
         {locationLink(
-          'UK',
-          laImage,
+          'Villas',
+          vimage,
           '?address=Los%20Angeles%2C%20California%2C%20USA&bounds=34.161440999758%2C-118.121305008073%2C33.9018913203336%2C-118.521456965901'
         )}
         {locationLink(
-          'Australia',
-          sfImage,
+          'Farm Houses',
+          fhimage,
           '?address=San%20Francisco%2C%20California%2C%20USA&bounds=37.8324430069081%2C-122.354995082683%2C37.6044780500533%2C-122.517910874663'
         )}
       </div>
@@ -78,13 +74,13 @@ const SectionLocations = props => {
   );
 };
 
-SectionLocations.defaultProps = { rootClassName: null, className: null };
+SectionPropertyType.defaultProps = { rootClassName: null, className: null };
 
 const { string } = PropTypes;
 
-SectionLocations.propTypes = {
+SectionPropertyType.propTypes = {
   rootClassName: string,
   className: string,
 };
 
-export default SectionLocations;
+export default SectionPropertyType;

@@ -7,10 +7,6 @@
   margin-bottom: 0;
 }
 
-.root {
-  margin: 50px 0px; 
-}
-
 .locations {
   display: flex;
   flex-direction: column;
@@ -64,32 +60,11 @@
 
 /* An image wrapper that defines the images aspect ratio */
 .aspectWrapper {
-  /* padding-bottom: calc(6 / 13 * 100%);  13:6 Aspect Ratio */
-  padding: 0px;
-  display: flex;
-  border-radius: 20px;
-  min-height: 280px;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease 0s;
+  padding-bottom: calc(6 / 13 * 100%); /* 13:6 Aspect Ratio */
+
   @media (--viewportMedium) {
-   /* padding-bottom: calc(2 / 3 * 100%);  3:2 Aspect Ratio */
+    padding-bottom: calc(2 / 3 * 100%); /* 3:2 Aspect Ratio */
   }
-
-  &:hover {
-    background-color: rgba(0,0,0,0.6);
-    background-blend-mode: color;
-  }
-}
-
-.boxStyle {
-  color:#F5f5f5;
-  text-shadow: 2px 3px 12px #222;
-}
-
-.boxStyle span  {
-  color:#F5f5f5;
-  text-shadow: 2px 3px 12px #222;
 }
 
 .locationImage {
