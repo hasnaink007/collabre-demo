@@ -3,6 +3,8 @@
 .layoutWrapperMain {
   min-height: calc(100vh - var(--topbarHeight));
 
+
+
   @media (--viewportMedium) {
     min-height: calc(100vh - var(--topbarHeightDesktop));
   }
@@ -19,6 +21,12 @@
 .content {
   @apply --marketplaceModalBaseStyles;
   padding-top: 29px;
+  display: block !important;
+  width: 90%;
+  max-width: initial;
+  flex-basis: initial;
+  max-width: 800px;
+  min-width: 300px;
 }
 
 /* ================ Tabs & Form ================ */

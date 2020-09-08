@@ -6,6 +6,7 @@ import { Form as FinalForm } from 'react-final-form';
 import classNames from 'classnames';
 import * as validators from '../../util/validators';
 import { Form, PrimaryButton, FieldTextInput } from '../../components';
+import SignupImageField from '../../components/SignupImageField/SignupImageField';
 
 import css from './SignupForm.css';
 
@@ -23,7 +24,7 @@ const SignupFormComponent = props => (
         inProgress,
         invalid,
         intl,
-        onOpenTermsOfService,
+        onOpenTermsOfService
       } = fieldRenderProps;
 
       // email
@@ -107,6 +108,24 @@ const SignupFormComponent = props => (
       });
       const lastNameRequired = validators.required(lastNameRequiredMessage);
 
+
+      // new Fields 
+      const phonePlaceholder = intl.formatMessage({
+        id:'SignupForm.phonePlaceholder'
+      });
+
+      const phoneLabel = intl.formatMessage({
+        id:'SignupForm.phoneLabel'
+      });
+
+
+      const phoneValidationMessage = intl.formatMessage({
+        id:'SignupForm.phoneInvalid'
+      });
+
+      const phoneNumberRequired = validators.required(phoneValidationMessage);
+
+
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
       const submitDisabled = invalid || submitInProgress;
@@ -173,7 +192,19 @@ const SignupFormComponent = props => (
               placeholder={passwordPlaceholder}
               validate={passwordValidators}
             />
+
+            <FieldTextInput
+              id="phonenumber"
+              className={css.phonenumberfield}
+              type="text"
+              name="phonenumber"
+              label={phoneLabel}
+              placeholder={phonePlaceholder}
+              validate={phoneNumberRequired}
+            />
+
           </div>
+       
 
           <div className={css.bottomWrapper}>
             <p className={css.bottomWrapperText}>

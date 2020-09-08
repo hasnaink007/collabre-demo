@@ -15,6 +15,7 @@ import {
   LayoutWrapperFooter,
   Footer,
   NamedLink,
+  SignupPaymentComponent
 } from '../../components';
 import { ProfileSettingsForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
@@ -31,6 +32,7 @@ const onImageUploadHandler = (values, fn) => {
 
 export class ProfileSettingsPageComponent extends Component {
   render() {
+    console.log(this.props);
     const {
       currentUser,
       currentUserListing,
@@ -72,7 +74,9 @@ export class ProfileSettingsPageComponent extends Component {
     const profileImageId = user.profileImage ? user.profileImage.id : null;
     const profileImage = image || { imageId: profileImageId };
 
-    const profileSettingsForm = user.id ? (
+    const paymentDone = currentUser ? currentUser.attributes.profile.protectedData.paymentDone === true : false;
+
+    const getProfileSettingForm = user.id ? (
       <ProfileSettingsForm
         className={css.form}
         currentUser={currentUser}
@@ -84,8 +88,17 @@ export class ProfileSettingsPageComponent extends Component {
         uploadImageError={uploadImageError}
         updateProfileError={updateProfileError}
         onSubmit={handleSubmit}
-      />
-    ) : null;
+      />) : null;
+
+
+      const getPaymentandImagesForm = (
+        <SignupPaymentComponent
+        />
+      );
+
+    const profileSettingsForm = paymentDone ? (
+      getProfileSettingForm
+    ) : getPaymentandImagesForm;
 
     const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 

@@ -180,3 +180,5 @@ export { default as Topbar } from './Topbar/Topbar';
 export { default as TopbarDesktop } from './TopbarDesktop/TopbarDesktop';
 export { default as TopbarMobileMenu } from './TopbarMobileMenu/TopbarMobileMenu';
 export { default as TransactionPanel } from './TransactionPanel/TransactionPanel';
+export { default as SignupPaymentComponent } from './SignupPaymentComponent/SignupPaymentComponent';
+export {default as SignupImageField} from './SignupImageField/SignupImageField';

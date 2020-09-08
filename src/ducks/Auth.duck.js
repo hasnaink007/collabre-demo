@@ -127,7 +127,11 @@ export const authInfo = () => (dispatch, getState, sdk) => {
   dispatch(authInfoRequest());
   return sdk
     .authInfo()
-    .then(info => dispatch(authInfoSuccess(info)))
+    .then(info => { 
+      console.log(info); 
+      dispatch(authInfoSuccess(info))
+     
+    })
     .catch(e => {
       // Requesting auth info just reads the token from the token
       // store (i.e. cookies), and should not fail in normal
@@ -139,7 +143,7 @@ export const authInfo = () => (dispatch, getState, sdk) => {
     });
 };
 
-export const login = (username, password) => (dispatch, getState, sdk) => {
+export const login = (username, password, images = null) => (dispatch, getState, sdk) => {
   if (authenticationInProgress(getState())) {
     return Promise.reject(new Error('Login or logout already in progress'));
   }
@@ -179,7 +183,7 @@ export const signup = params => (dispatch, getState, sdk) => {
     return Promise.reject(new Error('Login or logout already in progress'));
   }
   dispatch(signupRequest());
-  const { email, password, firstName, lastName, ...rest } = params;
+  const { email, password, firstName, lastName, images , ...rest } = params;
 
   const createUserParams = isEmpty(rest)
     ? { email, password, firstName, lastName }
@@ -190,7 +194,7 @@ export const signup = params => (dispatch, getState, sdk) => {
   return sdk.currentUser
     .create(createUserParams)
     .then(() => dispatch(signupSuccess()))
-    .then(() => dispatch(login(email, password)))
+    .then(() => dispatch(login(email, password, images)))
     .catch(e => {
       dispatch(signupError(storableError(e)));
       log.error(e, 'signup-failed', {

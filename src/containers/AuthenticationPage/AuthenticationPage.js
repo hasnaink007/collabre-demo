@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import config from '../../config';
 import { propTypes } from '../../util/types';
 import { ensureCurrentUser } from '../../util/data';
+import {requestImageUpload} from './AuthenticationPage.duck';
 import {
   isSignupEmailTakenError,
   isTooManyEmailVerificationRequestsError,
@@ -40,9 +41,14 @@ import css from './AuthenticationPage.css';
 export class AuthenticationPageComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { tosModalOpen: false };
+    this.state = { tosModalOpen: false, signupExtraImages: null };
   }
+
+
+
+
   render() {
+    console.log(this.props);
     const {
       authInProgress,
       currentUser,
@@ -130,9 +136,19 @@ export class AuthenticationPageComponent extends Component {
       },
     ];
 
+    
+    const uploadExtraProfileImage = (data) => {
+      this.setState({
+       signupExtraImages:data
+      });
+
+      this.props.onImageUpload(data);
+          
+    }
+
     const handleSubmitSignup = values => {
       const { fname, lname, ...rest } = values;
-      const params = { firstName: fname.trim(), lastName: lname.trim(), ...rest };
+      const params = { firstName: fname.trim(), lastName: lname.trim(), ...rest, images:this.state.signupExtraImages };
       submitSignup(params);
     };
 
@@ -148,6 +164,7 @@ export class AuthenticationPageComponent extends Component {
             onSubmit={handleSubmitSignup}
             inProgress={authInProgress}
             onOpenTermsOfService={() => this.setState({ tosModalOpen: true })}
+            onImageUpload={uploadExtraProfileImage}
           />
         )}
       </div>
@@ -315,6 +332,7 @@ const mapDispatchToProps = dispatch => ({
   onResendVerificationEmail: () => dispatch(sendVerificationEmail()),
   onManageDisableScrolling: (componentId, disableScrolling) =>
     dispatch(manageDisableScrolling(componentId, disableScrolling)),
+  onImageUpload: (data) => dispatch(requestImageUpload(data)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

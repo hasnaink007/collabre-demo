@@ -317,6 +317,7 @@ export const fetchCurrentUserNotifications = () => (dispatch, getState, sdk) => 
 };
 
 export const fetchCurrentUser = (params = null) => (dispatch, getState, sdk) => {
+
   dispatch(currentUserShowRequest());
   const { isAuthenticated } = getState().Auth;
 

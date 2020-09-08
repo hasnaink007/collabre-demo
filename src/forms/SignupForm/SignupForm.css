@@ -21,11 +21,18 @@
 }
 
 .firstNameRoot {
-  width: calc(34% - 9px);
+  width: calc(45% - 9px);
+}
+
+.alignImageItems {
+     display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    margin-top: 40px;
 }
 
 .lastNameRoot {
-  width: calc(66% - 9px);
+  width: calc(55% - 9px);
 }
 
 .password {
@@ -34,6 +41,11 @@
 
 .bottomWrapper {
   @apply --marketplaceModalBottomWrapper;
+}
+
+.phonenumberfield {
+  margin-top:32px;
+  /* margin: 20px 0px; */
 }
 
 .bottomWrapperText {
