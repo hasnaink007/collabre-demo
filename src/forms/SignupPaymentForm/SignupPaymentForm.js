@@ -49,12 +49,12 @@ class SignupPaymentForm extends Component {
                                             selectedImage={images}
                                         />
 
-                                        <SignupImageField 
+                                        {/* <SignupImageField 
                                             onImageUpload={onImageUpload}
                                             index={2}
                                             selectedImage={images}
                                             currentUser = {currentUser}
-                                        />
+                                        /> */}
                                         {/* <SignupImageField 
                                             onImageUpload={onImageUpload}
                                             index={1}            
