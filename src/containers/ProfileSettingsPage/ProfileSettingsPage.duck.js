@@ -10,6 +10,12 @@ export const UPLOAD_IMAGE_REQUEST = 'app/ProfileSettingsPage/UPLOAD_IMAGE_REQUES
 export const UPLOAD_IMAGE_SUCCESS = 'app/ProfileSettingsPage/UPLOAD_IMAGE_SUCCESS';
 export const UPLOAD_IMAGE_ERROR = 'app/ProfileSettingsPage/UPLOAD_IMAGE_ERROR';
 
+export const EXTRA_IMAGE_REQUEST = 'app/ProfileSettingsPage/EXTRA_IMAGE_REQUEST';
+export const EXTRA_IMAGE_SUCCESS = 'app/ProfileSettingsPage/EXTRA_IMAGE_SUCCESS';
+export const EXTRA_IMAGE_ERROR = 'app/ProfileSettingsPage/EXTRA_IMAGE_ERROR';
+
+export const MEMBERSHIP_PAYMENT_REQUEST = 'app/ProfileSettingsPage/MEMBERSHIP_PAYMENT_REQUEST';
+
 export const UPDATE_PROFILE_REQUEST = 'app/ProfileSettingsPage/UPDATE_PROFILE_REQUEST';
 export const UPDATE_PROFILE_SUCCESS = 'app/ProfileSettingsPage/UPDATE_PROFILE_SUCCESS';
 export const UPDATE_PROFILE_ERROR = 'app/ProfileSettingsPage/UPDATE_PROFILE_ERROR';
@@ -22,6 +28,7 @@ const initialState = {
   uploadInProgress: false,
   updateInProgress: false,
   updateProfileError: null,
+  membershipPaymentInProgress: false
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -67,8 +74,26 @@ export default function reducer(state = initialState, action = {}) {
         updateProfileError: payload,
       };
 
+
+    case EXTRA_IMAGE_REQUEST:
+      return {
+        ...state,
+        image: payload,
+        uploadInProgress: true
+      }
+
+    case EXTRA_IMAGE_SUCCESS:
+      return {
+        ...state,
+        updatedUser: payload,
+        uploadInProgress: false
+      }
+
     case CLEAR_UPDATED_FORM:
       return { ...state, updateProfileError: null, uploadImageError: null };
+
+    case MEMBERSHIP_PAYMENT_REQUEST: 
+      return {...state,membershipPaymentInProgress:true}
 
     default:
       return state;
@@ -107,6 +132,30 @@ export const updateProfileError = error => ({
   error: true,
 });
 
+
+export const extraImageRequest = data => {
+  return {
+    type:EXTRA_IMAGE_REQUEST,
+    payload:data
+  }
+}
+
+export const extraImageSuccess = data => {
+  return { 
+    type: EXTRA_IMAGE_SUCCESS,
+    payload: data
+  } 
+}
+
+
+export const extraImageErorr = (error) => {
+  return {
+    type:EXTRA_IMAGE_ERROR,
+    payload: error
+  }
+}
+ 
+
 // ================ Thunk ================ //
 
 // Images return imageId which we need to map with previously generated temporary id
@@ -131,6 +180,71 @@ export function uploadImage(actionPayload) {
       })
       .catch(e => dispatch(uploadImageError({ id, error: storableError(e) })));
   };
+}
+
+
+
+export function uploadSignupImage(actionPayload) { 
+
+  return (dispatch, getState, sdk) => {
+
+    dispatch(extraImageRequest(actionPayload));
+
+    const id = actionPayload.id;
+    const fieldIndex = actionPayload.index;
+
+
+    sdk.images.upload({
+      image:actionPayload.file
+    })
+
+    .then((resp) => {
+        const uploadedImage = resp.data.data;
+        console.log(uploadedImage);
+        const imageUUID = uploadedImage.id.uuid;
+
+        sdk.currentUser.show().then((resp) => {
+
+          const user = resp.data.data.attributes.profile;
+
+          const {protectedData} = user;
+          
+          let newImagesData = {};
+          
+          newImagesData[fieldIndex] = imageUUID;
+
+          // if(protectedData.extra_images) {
+          //   if(Array.isArray(protectedData.extra_images)) {
+
+          //     newImagesData = [...newImagesData,...protectedData.extra_images];
+          //   }
+          // }
+
+          sdk.currentUser.updateProfile({
+            protectedData:{extra_images:{...protectedData.extra_images, ...newImagesData}}
+          })
+          .then(resp => {
+
+            console.log('adding extra image succeded')
+            dispatch(extraImageSuccess(resp.data));
+          })
+
+          .catch(e => dispatch(extraImageErorr(e)))
+
+        })
+
+        
+        dispatch(uploadImageSuccess({data:{id, uploadedImage}}));
+
+    })
+
+    .catch(e => dispatch(uploadImageError({ id, error: storableError(e) })));
+
+
+
+  }
+
+
 }
 
 export const updateProfile = actionPayload => {
@@ -160,3 +274,20 @@ export const updateProfile = actionPayload => {
       .catch(e => dispatch(updateProfileError(storableError(e))));
   };
 };
+
+
+
+export function initializeMembershipPayment(data) {
+
+  return (dispatch,getState,sdk) => {
+    console.log('triggered');
+    dispatch({
+      type:MEMBERSHIP_PAYMENT_REQUEST,
+      payload: {payment_amount:300}
+    })
+
+
+  }
+ 
+
+}

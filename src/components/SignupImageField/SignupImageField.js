@@ -26,14 +26,9 @@ class SignupImageField extends Component {
         }
 
         this.handleImageUpload = this.handleImageUpload.bind(this);
+        
+        
     }
-
-
-    imageUploadRequested= function() {
-        return false;
-
-    }
-
 
 
     fieldLabelHtml = () => (
@@ -45,25 +40,36 @@ class SignupImageField extends Component {
 
     handleImageUpload = function(file) {
         const data = {
-            file: {id:`${file.name}_${Date.now()}`, file }
+            id:`${file.name}_${Date.now()}`, 
+            file, 
+            index: this.props.index
         };
 
         this.props.onImageUpload(data);
 
     }
 
-    getSelectedImage = () => {
-        let selectedImage = this.state.file ? this.state.file : null;
-        return selectedImage;
+    removeSelectedImage = function() {
+        this.setState({
+            selectedImage:null
+        })
+
+
     }
 
-    wrapAddImageComponent = (component) => {      
-        return this.getSelectedImage() ? (
+
+    wrapAddImageComponent = (component) => {    
+        console.log()
+        const profile = this.props.currentUser ? this.props.currentUser.attributes.profile : null;
+
+        console.log(profile);
+        return this.props.selectedImage ? (
         <AddImages 
             className={css.fieldWrapper}
-            images={[this.getSelectedImage()]}   
+            images={[this.props.selectedImage]}
+            onRemoveImage={this.removeSelectedImage}   
         >
-
+            
             {component}
 
         </AddImages>
@@ -80,12 +86,21 @@ class SignupImageField extends Component {
     }
 
     render() {
+
+        const {
+            index
+        } = this.props;
+
+
+        const fieldName = 'signupExtraImage_' + index.toString();
+
         return (
             <div>
                 { this.wrapAddImageComponent(
                     <Field
                         type="file"
-                        name="signup_image"
+                        name={fieldName}
+                        id={fieldName}
                         accept="images/*"
                         label={this.fieldLabelHtml()}
                     >
@@ -99,7 +114,6 @@ class SignupImageField extends Component {
                                 const onChange = (e) => {
                                     let file = e.target.files[0];
                                     this.handleImageUpload(file);
-                                   console.log('Add Images Clicked', e.target);
                                 }
                                 
                                 const inputProps = {accept, id:name,name, onChange, type};

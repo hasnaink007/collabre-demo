@@ -15,10 +15,8 @@ class SignupPaymentForm extends Component {
     }
 
     render() {
-
-        const formSubmit = () => {
-
-        }
+        console.log(this.props);
+       
 
         return (
             <div>
@@ -30,15 +28,50 @@ class SignupPaymentForm extends Component {
                         fieldRenderProps => {
                             const {
                                 formSubmit,
-                                handleSubmit
+                                handleSubmit,
+                                onImageUpload,
+                                images,
+                                currentUser,
+                                isFormSubmitting
+
                             } = fieldRenderProps;
-                            return (
+                            
+                            const paymentButtonText = isFormSubmitting ? 'Initializing Payment...' : 'Make Payment';
+
+
+                            return (    
                                 <Form onSubmit={formSubmit} >
 
                                     <div className={css.alignImageItems}>
-                                        <SignupImageField />
-                                        <SignupImageField />
+                                        <SignupImageField 
+                                            onImageUpload={onImageUpload}
+                                            index={1}
+                                            selectedImage={images}
+                                        />
+
+                                        <SignupImageField 
+                                            onImageUpload={onImageUpload}
+                                            index={2}
+                                            selectedImage={images}
+                                            currentUser = {currentUser}
+                                        />
+                                        {/* <SignupImageField 
+                                            onImageUpload={onImageUpload}
+                                            index={1}            
+                                            selectedImage={images                                                                        
+                                        /> */}
+
+
+
                                     </div>
+
+                                        <hr className={css.separatorMargins} /> 
+                                    <h2>
+
+                                        Make Platform Membership Payment
+                                    </h2>
+
+                                    <button className={css.payNowButton}>{paymentButtonText}</button>
 
                                 </Form>
                             )

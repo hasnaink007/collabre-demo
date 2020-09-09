@@ -13,12 +13,29 @@ class SignupPaymentComponent extends Component {
         }
     }
 
-    formSubmit = () => {
+    formSubmit = (e) => {
+        e.preventDefault();
+        this.props.onPaymentSubmit();
+    }
+
+    onImageUpload = (data) => {
+        this.props.onImageUpload(data);
+      
 
     }
 
-    
+    onPaymentSubmit = () => {
+
+        this.props.onPaymentSubmit();
+
+    }
+
+
     render() {
+        const {
+            image
+        } = this.props;
+       
         return (
             <div>
                 <h2>You haven't completed your profile yet.</h2>
@@ -26,8 +43,10 @@ class SignupPaymentComponent extends Component {
 
                 <SignupPaymentForm 
                     formSubmit={this.formSubmit}
-
-
+                    onImageUpload={this.onImageUpload}
+                    images={image}
+                    currentUser={this.props.currentUser}
+                    isFormSubmitting={this.props.isFormSubmitting}
                 />
             </div>
         )

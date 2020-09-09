@@ -20,7 +20,7 @@ import {
 import { ProfileSettingsForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
 
-import { updateProfile, uploadImage } from './ProfileSettingsPage.duck';
+import { updateProfile, uploadImage, uploadSignupImage, initializeMembershipPayment } from './ProfileSettingsPage.duck';
 import css from './ProfileSettingsPage.css';
 
 const onImageUploadHandler = (values, fn) => {
@@ -30,9 +30,19 @@ const onImageUploadHandler = (values, fn) => {
   }
 };
 
+const onExtraImageUploadHandler = (values,fn) => {
+  const { id, imageId, file, index } = values;
+  if (file) {
+    fn({ id, imageId, file ,index});
+  }
+}
+
 export class ProfileSettingsPageComponent extends Component {
+
+  
   render() {
     console.log(this.props);
+  
     const {
       currentUser,
       currentUserListing,
@@ -45,8 +55,11 @@ export class ProfileSettingsPageComponent extends Component {
       uploadImageError,
       uploadInProgress,
       intl,
+      onSignupImageUpload,
+      onPaymentRequest
     } = this.props;
 
+    console.log('USER',currentUser);
     const handleSubmit = values => {
       const { firstName, lastName, bio: rawBio } = values;
 
@@ -68,6 +81,18 @@ export class ProfileSettingsPageComponent extends Component {
 
       onUpdateProfile(updatedValues);
     };
+
+
+    const onSignupPaymentSubmit = () => {
+
+
+      // console.log('submitting payment')
+      // console.log(onPaymentRequest);
+      onPaymentRequest();
+
+
+
+    }
 
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
@@ -93,6 +118,10 @@ export class ProfileSettingsPageComponent extends Component {
 
       const getPaymentandImagesForm = (
         <SignupPaymentComponent
+          {...this.props}
+          onImageUpload={e => onExtraImageUploadHandler(e,onSignupImageUpload)}
+          onPaymentSubmit={onSignupPaymentSubmit}
+          isFormSubmitting={this.props.membershipPaymentInProgress}
         />
       );
 
@@ -174,6 +203,8 @@ const mapStateToProps = state => {
     uploadInProgress,
     updateInProgress,
     updateProfileError,
+    updatedUser,
+    membershipPaymentInProgress
   } = state.ProfileSettingsPage;
   return {
     currentUser,
@@ -184,12 +215,17 @@ const mapStateToProps = state => {
     updateProfileError,
     uploadImageError,
     uploadInProgress,
+    updatedUser,
+    membershipPaymentInProgress
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   onImageUpload: data => dispatch(uploadImage(data)),
   onUpdateProfile: data => dispatch(updateProfile(data)),
+  onSignupImageUpload: data => dispatch(uploadSignupImage(data)),
+  onPaymentRequest : data => dispatch(initializeMembershipPayment(data))
+
 });
 
 const ProfileSettingsPage = compose(
