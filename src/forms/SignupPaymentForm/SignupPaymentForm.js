@@ -14,9 +14,11 @@ class SignupPaymentForm extends Component {
         }
     }
 
+
+    
+
     render() {
-        console.log(this.props);
-       
+        const {imageUploadState} = this.props;
 
         return (
             <div>
@@ -32,29 +34,44 @@ class SignupPaymentForm extends Component {
                                 onImageUpload,
                                 images,
                                 currentUser,
-                                isFormSubmitting
-
+                                isFormSubmitting,
+                                onRemoveExtraImage,
+                                openPaymentPopup
                             } = fieldRenderProps;
+
                             
                             const paymentButtonText = isFormSubmitting ? 'Initializing Payment...' : 'Make Payment';
 
-
+                            // const uploadedImages = currentUser ? currentUser.attributes.profile.protectedData.extra_images : null;
                             return (    
-                                <Form onSubmit={formSubmit} >
+                                <div>
+                                    {/* <Form onSubmit={formSubmit} ></Form> */}
 
+
+                                    <div className={css.LabelBlock}>
+                                        <span className={css.labelText}>
+                                            Training/ Mentorship Invoice or Certificate of completion is required to post 
+                                        </span>
+
+                                        <span className={css.helperText}>
+                                            (Please provide a copy/ screenshot of the original within 14 days of signup or your membership will be put on hold)
+                                        </span>
+                                    </div>
+                                    
                                     <div className={css.alignImageItems}>
                                         <SignupImageField 
                                             onImageUpload={onImageUpload}
                                             index={1}
-                                            selectedImage={images}
+                                            imageUploadState={imageUploadState}
+                                            onRemoveExtraImage={onRemoveExtraImage}
                                         />
 
-                                        {/* <SignupImageField 
+                                        <SignupImageField 
                                             onImageUpload={onImageUpload}
                                             index={2}
-                                            selectedImage={images}
-                                            currentUser = {currentUser}
-                                        /> */}
+                                            imageUploadState={imageUploadState}
+                                            onRemoveExtraImage={onRemoveExtraImage}
+                                        />
                                         {/* <SignupImageField 
                                             onImageUpload={onImageUpload}
                                             index={1}            
@@ -71,9 +88,9 @@ class SignupPaymentForm extends Component {
                                         Make Platform Membership Payment
                                     </h2>
 
-                                    <button className={css.payNowButton}>{paymentButtonText}</button>
+                                    <button className={css.payNowButton} onClick={openPaymentPopup}>{paymentButtonText}</button>
 
-                                </Form>
+                                </div>
                             )
 
 

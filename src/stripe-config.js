@@ -7,6 +7,7 @@ To make Stripe connection work, you also need to set Stripe's private key in the
 
 export const stripePublishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 
+export const stripeSecretKey = process.env.REACT_APP_STRIPE_SECRET_KEY;
 /**
  * Default merchant category code (MCC)
  * MCCs are used to classify businesses by the type of goods or services they provide.

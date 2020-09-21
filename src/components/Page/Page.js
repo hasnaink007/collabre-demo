@@ -34,6 +34,7 @@ class PageComponent extends Component {
     this.scrollPosition = 0;
     this.contentDiv = null;
     this.scrollingDisabledChanged = this.scrollingDisabledChanged.bind(this);
+
   }
 
   componentDidMount() {

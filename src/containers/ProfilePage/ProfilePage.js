@@ -9,6 +9,7 @@ import { ensureCurrentUser, ensureUser } from '../../util/data';
 import { withViewport } from '../../util/contextHelpers';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import {NamedRedirect} from '../../components/';
 import {
   Page,
   LayoutSideNavigation,
@@ -42,7 +43,23 @@ export class ProfilePageComponent extends Component {
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
     this.showOfCustomerReviews = this.showOfCustomerReviews.bind(this);
+    this.redirectOrAllow = this.redirectOrAllow.bind(this)
   }
+
+
+  // componentDidUpdate() {
+    
+  //   console.log(this.props);
+  //   console.log('ready to settings');
+  //   if(this.props.currentUser) {
+     
+  //     if(!this.props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
+  //       console.log('sending to settings');
+  //       // this.props.history.push('/profile-settings');
+  //     }
+
+  //   }
+  // }
 
   showOfProviderReviews() {
     this.setState({
@@ -56,7 +73,27 @@ export class ProfilePageComponent extends Component {
     });
   }
 
+  redirectOrAllow() {
+    if(this.props.currentUser) {
+     
+      if(!this.props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
+        return true;
+      }
+
+    }
+
+    return false;
+
+  }
+
   render() {
+
+    if(this.redirectOrAllow()) {
+      
+      return <NamedRedirect name="ProfileSettingsPage" />
+    
+    }
+
     const {
       scrollingDisabled,
       currentUser,

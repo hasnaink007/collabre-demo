@@ -20,7 +20,17 @@ import {
 import { ProfileSettingsForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
 
-import { updateProfile, uploadImage, uploadSignupImage, initializeMembershipPayment } from './ProfileSettingsPage.duck';
+import { 
+  updateProfile, 
+  uploadImage, 
+  uploadSignupImage, 
+  initializeMembershipPayment,
+  onRemoveImage,
+  loadExtraImagesOnLoad,
+  chargeStripeCardOnToken,
+  togglePaymentPopup
+} from './ProfileSettingsPage.duck';
+
 import css from './ProfileSettingsPage.css';
 
 const onImageUploadHandler = (values, fn) => {
@@ -39,10 +49,19 @@ const onExtraImageUploadHandler = (values,fn) => {
 
 export class ProfileSettingsPageComponent extends Component {
 
+  componentDidMount() {
+  
+    if(this.props.imageUploadState == null) {
+      this.props.loadExtraImages();
+    } 
+
+  }
+
+
+  
   
   render() {
-    console.log(this.props);
-  
+
     const {
       currentUser,
       currentUserListing,
@@ -56,10 +75,16 @@ export class ProfileSettingsPageComponent extends Component {
       uploadInProgress,
       intl,
       onSignupImageUpload,
-      onPaymentRequest
+      onPaymentRequest,
+      onRemoveImage,
+      loadExtraImages,
+      chargeStripeCard,
+      paymentPopupOpened,
+      togglePaymentModal,
+      stripePaymentInProgress
     } = this.props;
 
-    console.log('USER',currentUser);
+
     const handleSubmit = values => {
       const { firstName, lastName, bio: rawBio } = values;
 
@@ -94,12 +119,23 @@ export class ProfileSettingsPageComponent extends Component {
 
     }
 
+
+    const onRemoveExtraImage = (imageId) => {
+      
+      onRemoveImage({imageIndex:imageId});
+
+    }
+
+    const triggerExtraImages = () => {
+      loadExtraImages(currentUser);
+    }
+
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
     const profileImageId = user.profileImage ? user.profileImage.id : null;
     const profileImage = image || { imageId: profileImageId };
 
-    const paymentDone = currentUser ? currentUser.attributes.profile.protectedData.paymentDone === true : false;
+    const paymentDone = currentUser && currentUser.attributes.profile.protectedData.membershipInfo ? currentUser.attributes.profile.protectedData.membershipInfo.success : true;
 
     const getProfileSettingForm = user.id ? (
       <ProfileSettingsForm
@@ -122,6 +158,12 @@ export class ProfileSettingsPageComponent extends Component {
           onImageUpload={e => onExtraImageUploadHandler(e,onSignupImageUpload)}
           onPaymentSubmit={onSignupPaymentSubmit}
           isFormSubmitting={this.props.membershipPaymentInProgress}
+          onRemoveExtraImage={onRemoveExtraImage}
+          triggerExtraImages={triggerExtraImages}
+          chargeStripeCard={this.props.chargeStripeCard}
+          paymentPopupOpened={paymentPopupOpened}
+          togglePaymentModal={togglePaymentModal}
+          stripePaymentInProgress={stripePaymentInProgress}
         />
       );
 
@@ -203,9 +245,15 @@ const mapStateToProps = state => {
     uploadInProgress,
     updateInProgress,
     updateProfileError,
-    updatedUser,
-    membershipPaymentInProgress
+    membershipPaymentInProgress, 
+    paymentPopupOpened  ,
+    stripePaymentInProgress 
   } = state.ProfileSettingsPage;
+
+  let imageUploadState = state.ProfileSettingsPage.imageUploadState;
+
+  imageUploadState = imageUploadState;
+
   return {
     currentUser,
     currentUserListing,
@@ -215,8 +263,10 @@ const mapStateToProps = state => {
     updateProfileError,
     uploadImageError,
     uploadInProgress,
-    updatedUser,
-    membershipPaymentInProgress
+    imageUploadState,
+    membershipPaymentInProgress,
+    paymentPopupOpened,
+    stripePaymentInProgress
   };
 };
 
@@ -224,8 +274,11 @@ const mapDispatchToProps = dispatch => ({
   onImageUpload: data => dispatch(uploadImage(data)),
   onUpdateProfile: data => dispatch(updateProfile(data)),
   onSignupImageUpload: data => dispatch(uploadSignupImage(data)),
-  onPaymentRequest : data => dispatch(initializeMembershipPayment(data))
-
+  onPaymentRequest : data => dispatch(initializeMembershipPayment(data)),
+  onRemoveImage: data => dispatch(onRemoveImage(data)),
+  loadExtraImages: data => dispatch(loadExtraImagesOnLoad(data)),
+  chargeStripeCard: data => dispatch(chargeStripeCardOnToken(data)),
+  togglePaymentModal: data => dispatch(togglePaymentPopup(data))
 });
 
 const ProfileSettingsPage = compose(

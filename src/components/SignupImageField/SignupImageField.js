@@ -26,7 +26,7 @@ class SignupImageField extends Component {
         }
 
         this.handleImageUpload = this.handleImageUpload.bind(this);
-        
+        this.removeSelectedImage = this.removeSelectedImage.bind(this);
         
     }
 
@@ -39,6 +39,8 @@ class SignupImageField extends Component {
     );
 
     handleImageUpload = function(file) {
+
+        
         const data = {
             id:`${file.name}_${Date.now()}`, 
             file, 
@@ -49,28 +51,78 @@ class SignupImageField extends Component {
 
     }
 
-    removeSelectedImage = function() {
-        this.setState({
-            selectedImage:null
-        })
+    removeSelectedImage = function(e) {
+
+        const {onRemoveExtraImage} = this.props;
+
+        onRemoveExtraImage(e);
+    }
+
+    getThisComponentimage = () => {
+            
+            if(this.props.imageUploadState) {
+                
+                
+               return this.props.imageUploadState.find((value) => {
+
+                    if(value.index == this.props.index) {
+                        return true;
+                    }
+
+                }); 
+
+            //     if(imageSelected) {
+                    
+            //         return {
+                    
+            //             file: imageSelected[this.props.index],
+            //             id: this.props.index,
+            //             index:this.props.index,
+            //             imageId:this.props.index
+            //         }
 
 
+                
+            //     } else {
+            //         return null;
+            //     }
+               
+
+            }  else {
+                
+             return false; 
+            
+            }
     }
 
 
+    generateSavedImagesObj = () => {
+
+        return {
+            file:this.props.selectedImage ? this.props.selectedImage[this.props.index] : null,
+            id:this.props.index,
+            index:this.props.index,
+            imageId:this.props.index
+        }
+
+    }
+
     wrapAddImageComponent = (component) => {    
-        console.log()
         const profile = this.props.currentUser ? this.props.currentUser.attributes.profile : null;
 
-        console.log(profile);
-        return this.props.selectedImage ? (
-        <AddImages 
+        // const hasImageUploaded = this.props.selectedImage ? this.props.selectedImage[this.props.index] : null;
+
+        return (this.getThisComponentimage()) ? (
+
+            <AddImages 
             className={css.fieldWrapper}
-            images={[this.props.selectedImage]}
-            onRemoveImage={this.removeSelectedImage}   
+            images={this.getThisComponentimage() ? [this.getThisComponentimage()] : null}
+            onRemoveImage={this.removeSelectedImage} 
+            loadFromUrl={true}  
         >
             
-            {component}
+               
+          
 
         </AddImages>
         )
@@ -78,7 +130,7 @@ class SignupImageField extends Component {
         <AddImages 
             className={css.fieldWrapper}            
         >
-
+            
         {component}
 
         </AddImages>
@@ -88,9 +140,12 @@ class SignupImageField extends Component {
     render() {
 
         const {
-            index
+            index,
+            imageUploadState
         } = this.props;
 
+
+        
 
         const fieldName = 'signupExtraImage_' + index.toString();
 

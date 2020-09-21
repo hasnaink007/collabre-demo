@@ -22,6 +22,7 @@ import { TopbarContainer } from '../../containers';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { saveContactDetails, saveContactDetailsClear } from './ContactDetailsPage.duck';
 import css from './ContactDetailsPage.css';
+import {NamedRedirect} from '../../components/'
 
 export const ContactDetailsPageComponent = props => {
   const {
@@ -40,6 +41,29 @@ export const ContactDetailsPageComponent = props => {
     intl,
   } = props;
 
+  const redirectOrAllow = (props) => {
+    if(props.currentUser) {
+     
+      if(!props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
+        return true;
+      }
+
+    }
+
+    return false;
+
+  }
+
+  
+
+  if(redirectOrAllow(props)) {
+      
+    return <NamedRedirect name="ProfileSettingsPage" />
+  
+  }
+  
+
+  
   const user = ensureCurrentUser(currentUser);
   const currentEmail = user.attributes.email || '';
   const protectedData = user.attributes.profile.protectedData || {};

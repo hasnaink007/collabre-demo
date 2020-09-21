@@ -22,6 +22,7 @@ import {
   StyleguidePage,
   TermsOfServicePage,
   TransactionPage,
+  PaymentAuthLogicWrapper
 } from './containers';
 
 // routeConfiguration needs to initialize containers first

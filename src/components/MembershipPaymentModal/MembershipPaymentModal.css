@@ -1,0 +1,43 @@
+.closedModel div {
+    display:none;
+}
+
+
+.mainModalWrapper {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.LoadingWrapperVisible {
+    /* position: absolute;
+    top: 0px;
+    bottom: 0;
+    left: 0;
+    right: 0; */
+    background: rgba(255,255,255,0.8);
+}
+
+
+.loadingText{
+    /* position: relative;
+    height: 300px;
+    top: 50%;
+    transform: translate(-50%);
+    left: 50%;
+    font-size: 38px;
+    color: #FFF; */
+    text-shadow: 0px 0px 4px #222;
+}
+
+.loadingWrapperHidden {
+
+    display:none;
+}
+
+.contentContainer span {
+    display: block;
+    text-align: center;
+}

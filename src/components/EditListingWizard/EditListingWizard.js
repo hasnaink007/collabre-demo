@@ -253,7 +253,28 @@ class EditListingWizard extends Component {
       });
   }
 
+  
+  redirectOrAllow() {
+    if(this.props.currentUser) {
+     
+      if(!this.props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
+        return true;
+      }
+
+    }
+
+    return false;
+
+  }
+
   render() {
+
+    if(this.redirectOrAllow()) {
+      
+      return <NamedRedirect name="ProfileSettingsPage" />
+    
+    }
+    
     const {
       id,
       className,

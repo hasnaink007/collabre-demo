@@ -178,6 +178,7 @@ Routes.propTypes = {
 
 const mapStateToProps = state => {
   const { isAuthenticated, logoutInProgress } = state.Auth;
+ 
   return { isAuthenticated, logoutInProgress };
 };
 

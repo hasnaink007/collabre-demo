@@ -9,6 +9,10 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const apiRouter = require('./apiRouter');
+const FileHandlingHooks = require('./fileHandlingHooks');
+const fileUpload = require('express-fileupload');
+const customStripeChages = require('./customStripeCharges')
+
 
 const radix = 10;
 const PORT = parseInt(process.env.REACT_APP_DEV_API_SERVER_PORT, radix);
@@ -23,7 +27,16 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+app.use(fileUpload({
+  createParentPath:true
+}));
+
+app.use(express.static('./uploads'))
+
 app.use('/api', apiRouter);
+app.use('/files',FileHandlingHooks);
+app.use('/customStripecharges',customStripeChages);
 
 app.listen(PORT, () => {
   console.log(`API server listening on ${PORT}`);

@@ -1,7 +1,11 @@
 import { denormalisedResponseEntities } from '../../util/data';
 import { storableError } from '../../util/errors';
 import { currentUserShowSuccess } from '../../ducks/user.duck';
-
+import {
+  uploadImagesToStorage,
+  chargeStripePayment
+} from '../../util/api';
+import ProfileSettingsPage from './ProfileSettingsPage';
 // ================ Action types ================ //
 
 export const CLEAR_UPDATED_FORM = 'app/ProfileSettingsPage/CLEAR_UPDATED_FORM';
@@ -20,6 +24,19 @@ export const UPDATE_PROFILE_REQUEST = 'app/ProfileSettingsPage/UPDATE_PROFILE_RE
 export const UPDATE_PROFILE_SUCCESS = 'app/ProfileSettingsPage/UPDATE_PROFILE_SUCCESS';
 export const UPDATE_PROFILE_ERROR = 'app/ProfileSettingsPage/UPDATE_PROFILE_ERROR';
 
+
+export const REMOVE_IMAGE_REQUEST = 'app/ProfileSettingsPage/REMOVE_IMAGE_REQUEST';
+export const REMOVE_IMAGE_SUCCESS = 'app/ProfileSettingsPage/REMOVE_IMAGE_SUCCESS';
+export const REMOVE_IMAGE_ERROR = 'app/ProfileSettingsPage/REMOVE_IMAGE_ERROR';
+
+
+export const CHARGE_STRIPE_REQUEST = 'app/ProfileSettingsPage/CHARGE_STRIPE_REQUEST';
+export const CHARGE_STRIPE_SUCCESS = 'app/ProfileSettingsPage/CHARGE_STRIPE_SUCCESS';
+export const CHARGE_STRIPE_ERROR = 'app/ProfileSettingsPage/CHARGE_STRIPE_ERROR';
+
+export const LOAD_EXTRA_IMAGES_ON_LOAD = 'app/ProfileSettingsPage/LOAD_EXTRA_IMAGES_ON_LOAD';
+
+export const CHANGE_MEMBERSHIP_PAYMENT_POPUP = 'app/ProfileSettingsPage/OPEN_MEMBERSHIP_PAYMENT_POPUP';
 // ================ Reducer ================ //
 
 const initialState = {
@@ -28,7 +45,10 @@ const initialState = {
   uploadInProgress: false,
   updateInProgress: false,
   updateProfileError: null,
-  membershipPaymentInProgress: false
+  membershipPaymentInProgress: false,
+  imageUploadState:null,
+  stripePaymentInProgress:false,
+  paymentPopupOpened:false,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -83,9 +103,10 @@ export default function reducer(state = initialState, action = {}) {
       }
 
     case EXTRA_IMAGE_SUCCESS:
+      const newImageUploadState = state.imageUploadState.push(payload);
       return {
         ...state,
-        updatedUser: payload,
+        imageUploadState: state.imageUploadState,
         uploadInProgress: false
       }
 
@@ -94,6 +115,25 @@ export default function reducer(state = initialState, action = {}) {
 
     case MEMBERSHIP_PAYMENT_REQUEST: 
       return {...state,membershipPaymentInProgress:true}
+    
+    case REMOVE_IMAGE_SUCCESS:
+      return {...state, ...payload};
+
+    case REMOVE_IMAGE_REQUEST:
+      return {...state,...payload}
+
+    case LOAD_EXTRA_IMAGES_ON_LOAD: 
+      return {...state,imageUploadState:payload}
+
+    case CHARGE_STRIPE_REQUEST: 
+      return {...state, ...payload}
+
+    case CHARGE_STRIPE_SUCCESS:
+      return { ...state,...payload }
+    
+    case CHANGE_MEMBERSHIP_PAYMENT_POPUP:
+      return {...state,...payload}
+
 
     default:
       return state;
@@ -154,7 +194,62 @@ export const extraImageErorr = (error) => {
     payload: error
   }
 }
+
+
+export const removeImageRequest = (data) => {
+  return {
+    type:REMOVE_IMAGE_REQUEST,
+    payload: data
+  }
+}
+
+export const removeImageSuccess = (data) => {
+
+  return {
+    type:REMOVE_IMAGE_SUCCESS,
+    payload:data
+  }
+}
  
+export const removeImageError = (error) => {
+  return {
+    type:REMOVE_IMAGE_ERROR,
+    payload:error
+  }
+}
+
+export const loadExtraImages = (data) => {
+  return {
+    type:LOAD_EXTRA_IMAGES_ON_LOAD,
+    payload:data
+  }
+}
+
+
+export const chargeStripeRequest = () => {
+
+  return{
+    type:CHARGE_STRIPE_REQUEST,
+    payload:{stripePaymentInProgress:true}
+  } 
+}
+
+export const chargeStripeSuccess = (data) => {
+  return {
+    type:CHARGE_STRIPE_SUCCESS,
+    payload:{stripePaymentInProgress:false,...data},
+  }
+}
+
+
+export const changePaymentPopup = (popupState)=> {
+
+  return {
+    type: CHANGE_MEMBERSHIP_PAYMENT_POPUP,
+    payload:{paymentPopupOpened:popupState}
+  }
+
+}
 
 // ================ Thunk ================ //
 
@@ -192,16 +287,31 @@ export function uploadSignupImage(actionPayload) {
 
     const id = actionPayload.id;
     const fieldIndex = actionPayload.index;
+    const form_data = new FormData();
+    // console.log(actionPayload);
+    form_data.append('extraImage',actionPayload.file);
+    form_data.append('fileId',actionPayload.id);
 
+    // debugger;
 
-    sdk.images.upload({
-      image:actionPayload.file
-    })
+    uploadImagesToStorage({
+      file:form_data,
+      fileID:actionPayload.id,
+      fieldIndex:actionPayload.index
+    },(data,err) => {
+      if(err) extraImageErorr(err);      
+      if(data) {
+        console.log('final Data',data);
 
-    .then((resp) => {
-        const uploadedImage = resp.data.data;
-        console.log(uploadedImage);
-        const imageUUID = uploadedImage.id.uuid;
+        const responseData = {
+          response:data,
+          id:id,
+          index:fieldIndex,
+          file:data.image_url,
+          imageId:id
+        };
+
+        // dispatch(extraImageSuccess(responseData));
 
         sdk.currentUser.show().then((resp) => {
 
@@ -211,7 +321,7 @@ export function uploadSignupImage(actionPayload) {
           
           let newImagesData = {};
           
-          newImagesData[fieldIndex] = imageUUID;
+          newImagesData[fieldIndex] = data.image_url;
 
           // if(protectedData.extra_images) {
           //   if(Array.isArray(protectedData.extra_images)) {
@@ -226,21 +336,19 @@ export function uploadSignupImage(actionPayload) {
           .then(resp => {
 
             console.log('adding extra image succeded')
-            dispatch(extraImageSuccess(resp.data));
+            dispatch(extraImageSuccess(responseData));
           })
 
           .catch(e => dispatch(extraImageErorr(e)))
 
         })
 
-        
-        dispatch(uploadImageSuccess({data:{id, uploadedImage}}));
 
-    })
-
-    .catch(e => dispatch(uploadImageError({ id, error: storableError(e) })));
+      }
 
 
+    } )
+   
 
   }
 
@@ -280,7 +388,7 @@ export const updateProfile = actionPayload => {
 export function initializeMembershipPayment(data) {
 
   return (dispatch,getState,sdk) => {
-    console.log('triggered');
+
     dispatch({
       type:MEMBERSHIP_PAYMENT_REQUEST,
       payload: {payment_amount:300}
@@ -289,5 +397,229 @@ export function initializeMembershipPayment(data) {
 
   }
  
+
+}
+
+
+
+
+export function onRemoveImage(data) {
+
+  const {imageIndex} = data;
+
+
+
+  return (dispatch, state, sdk ) => {
+
+      let currentImageUploadState = state().ProfileSettingsPage.imageUploadState
+     
+      if(currentImageUploadState.length > 0) {
+    
+        let indexNumber = currentImageUploadState.findIndex((image) => {
+          if(parseInt(image.index) == parseInt(imageIndex)) {
+            return true;
+          }
+        });
+        delete currentImageUploadState[indexNumber].imageId;      
+        dispatch(removeImageRequest({uploadInProgress:true,imageUploadState:currentImageUploadState}))
+          
+
+      }
+      
+      
+    sdk.currentUser.show().then((resp) => {
+      
+      const user = resp.data.data.attributes.profile;
+      const updatedExtraImages = user.protectedData.extra_images;
+
+      delete updatedExtraImages[imageIndex];
+      
+      console.log(updatedExtraImages);
+
+      sdk.currentUser.updateProfile({
+        protectedData:{
+          extra_images:updatedExtraImages
+        }
+      }).then((res) => {
+        if(res.status = 200) {
+
+          let finalArray = [];
+
+
+          for(const image in updatedExtraImages) {
+            finalArray.push({                    
+              file: updatedExtraImages[image],
+              id: image,
+              index:image,
+              imageId:image
+          })
+
+          }
+          
+          dispatch(removeImageSuccess({uploadInProgress:false,imageUploadState:finalArray}));
+        }
+        
+
+      })
+
+      .catch((err) => {
+        console.log('ERROR TRIGGERED',err);
+        dispatch(removeImageError(err));
+        
+      })
+
+    });
+
+
+  }
+
+
+
+} 
+
+
+export function loadExtraImagesOnLoad() {
+  
+
+  return (dispatch,state,sdk) => {
+
+    sdk.currentUser.show().then((res) => {
+      console.log(res.data);
+      const user = res.data.data;
+
+      const extraImages = user.attributes.profile.protectedData.extra_images;
+      let finalArray = [];
+
+
+      for(const image in extraImages) {
+        finalArray.push({                    
+          file: extraImages[image],
+          id: image,
+          index:image,
+          imageId:image
+      })
+
+      }
+
+      return dispatch(loadExtraImages(finalArray));
+
+    })
+
+
+  }
+
+
+}
+
+
+
+export function chargeStripeCardOnToken(params) {
+
+
+  const {token, values} = params;
+
+  
+
+  return (dispatch,state,sdk) => {
+    //extract current user from state
+    //  const {user} = 
+
+
+    // Dispatch to change state to request is being processed
+    dispatch(chargeStripeRequest());
+
+    const user = state().user.currentUser.attributes.profile;
+
+    const protectedData = user.protectedData;
+
+    const getstate = state();
+    // will check if the user is already purchased a member plan.
+
+
+    chargeStripePayment(params)
+    
+    .then((response) => {
+        // response contains 
+        // {
+          
+        //   success:true,
+        //   paymentDetails:{
+        //       trxID:charge.id,
+        //       amount:membershipFee
+        //   }
+        // }
+        // 
+
+
+        const date = new Date();
+        const currentTimestamp = date.getTime();
+
+
+        // save payment info to user profile
+        sdk.currentUser.updateProfile({
+
+          protectedData: {
+            membershipInfo: {
+              ...response,
+              registrationTime:currentTimestamp
+            }
+          }
+
+        })
+
+        .then((res) => {
+          console.log(res);
+          dispatch(changePaymentPopup(!getstate.ProfileSettingsPage.paymentPopupOpened));
+          dispatch(chargeStripeSuccess());
+          
+          // reloading page
+          setTimeout(() => {
+            window.location.reload()
+          },2000)
+          
+
+        })
+
+    })
+    .catch((error) => {
+    
+      console.error('API CALL FAILED', error);
+    
+    })
+
+
+
+     // Make API call to server with token and values
+
+     // On successful REsponse, save TRX token for user protectedData
+      //  in following format
+
+      // {
+      //     paymentDone: true,
+      //     paymentDetails:{ 
+      //       paymentDate:'',
+      //       paymentTime:'',
+      //       paymentAmount:'',
+      //     }
+      // }
+
+
+      // once saved, dispatch success action
+
+  }
+
+}
+
+
+export function togglePaymentPopup() {
+
+  return (dispatch,getState,sdk) =>  {
+    const state = getState();
+
+    dispatch(changePaymentPopup(!state.ProfileSettingsPage.paymentPopupOpened));
+
+
+  }
+    
 
 }

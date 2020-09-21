@@ -39,9 +39,11 @@ const ThumbnailWrapper = props => {
         className={className}
         rootClassName={css.thumbnail}
         file={image.file}
+        loadFromUrl={props.loadFromUrl}
       >
         {removeButton}
         {uploadingOverlay}
+        
       </ImageFromFile>
     );
   } else {
@@ -83,6 +85,7 @@ const AddImages = props => {
     images,
     savedImageAltText,
     onRemoveImage,
+    loadFromUrl,
   } = props;
   const classes = classNames(css.root, className);
   return (
@@ -96,6 +99,7 @@ const AddImages = props => {
             className={thumbnailClassName}
             savedImageAltText={savedImageAltText}
             onRemoveImage={onRemoveImage}
+            loadFromUrl={loadFromUrl}
           />
         );
       })}

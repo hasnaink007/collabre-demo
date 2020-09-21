@@ -24,8 +24,9 @@ const readImage = file =>
 class ImageFromFile extends Component {
   constructor(props) {
     super(props);
+    
     this.state = {
-      promisedImage: readImage(this.props.file),
+      promisedImage: (!props.loadFromUrl) ? (readImage(this.props.file)) : null,
     };
   }
 
@@ -33,6 +34,17 @@ class ImageFromFile extends Component {
     const { className, rootClassName, aspectRatioClassName, file, id, children } = this.props;
     const classes = classNames(rootClassName || css.root, className);
     const aspectRatioClasses = aspectRatioClassName || css.aspectWrapper;
+
+    if(this.props.loadFromUrl) {
+
+      return (
+        <div class={css.imageURLContainer}>
+          <img src={file} />
+          {children}
+        </div>
+      )
+
+    }
     return (
       <Promised
         key={id}

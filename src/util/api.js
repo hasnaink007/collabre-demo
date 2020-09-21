@@ -99,3 +99,77 @@ export const initiatePrivileged = body => {
 export const transitionPrivileged = body => {
   return post('/api/transition-privileged', body);
 };
+
+
+
+
+//  File level functions to upload images:
+
+export const uploadImagesToStorage = (fileObj,cb) => {
+  const {file} = fileObj;
+
+  
+  const url = `${apiBaseUrl()}/files/uploadFile`;
+  fetch(url, {
+    method:'POST',
+    body:file
+
+  }).then((res) => {
+    
+
+    const responseJSON = res.json();
+    
+    return responseJSON;  
+  
+  }).then((res) => {  
+    
+    res.image_url = `${apiBaseUrl()}${res.image_url}`
+
+    cb(res);
+  })
+  
+  .catch((err) => {
+    cb(null,err);
+  })
+
+}
+
+
+export const chargeStripePayment = function(params) {
+
+  const url = `${apiBaseUrl()}/customStripecharges/chargePayment`;
+  
+  return new Promise((resolve, reject) => {
+    let stringParams = JSON.stringify(params);
+
+    fetch(url,{
+      method:'POST',
+      body: stringParams,
+      headers:{
+        'Content-type':'application/json'
+      }
+    })  
+
+    .then((res) => res.json())
+
+    .then(response => {
+
+      if(response.success) {
+        resolve(response);
+      } else {
+        reject(response);
+      }
+
+    })
+
+    .catch((err) => {
+
+      reject({...err,success:false});
+
+    })
+
+
+  });
+
+
+}

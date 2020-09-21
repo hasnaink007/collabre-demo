@@ -142,7 +142,7 @@ export class AuthenticationPageComponent extends Component {
        signupExtraImages:data
       });
 
-      this.props.onImageUpload(data);
+      // this.props.onImageUpload(data);
           
     }
 
