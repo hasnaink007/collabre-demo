@@ -56,6 +56,7 @@ const SectionLocations = props => {
     <div className={classes}>
       <div className={css.title}>
         <FormattedMessage id="SectionLocations.title" />
+        <span className={css.subTitle}><FormattedMessage id="SectionLocations.subtitle" /></span>
       </div>
       <div className={css.locations}>
         {locationLink(

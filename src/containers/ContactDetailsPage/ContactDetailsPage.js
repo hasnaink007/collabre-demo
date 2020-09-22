@@ -43,8 +43,12 @@ export const ContactDetailsPageComponent = props => {
 
   const redirectOrAllow = (props) => {
     if(props.currentUser) {
+
+      if(!props.currentUser.attributes.profile.protectedData.membershipInfo ) {
+        return true;
+      }
      
-      if(!props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
+      if(props.currentUser.attributes.profile.protectedData.membershipInfo && !props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
         return true;
       }
 

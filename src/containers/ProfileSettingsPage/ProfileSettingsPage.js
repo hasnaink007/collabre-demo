@@ -135,7 +135,7 @@ export class ProfileSettingsPageComponent extends Component {
     const profileImageId = user.profileImage ? user.profileImage.id : null;
     const profileImage = image || { imageId: profileImageId };
 
-    const paymentDone = currentUser && currentUser.attributes.profile.protectedData.membershipInfo ? currentUser.attributes.profile.protectedData.membershipInfo.success : true;
+    const paymentDone = !currentUser ? true : currentUser.attributes.profile.protectedData.membershipInfo ? currentUser.attributes.profile.protectedData.membershipInfo.success : false;
 
     const getProfileSettingForm = user.id ? (
       <ProfileSettingsForm

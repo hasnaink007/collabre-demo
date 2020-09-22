@@ -94,3 +94,14 @@
 .locationName {
   color: var(--marketplaceColor);
 }
+
+
+
+.subTitle {
+  display: block;
+  font-size: 21px;
+  font-weight: normal;
+  letter-spacing: normal;
+  margin-top: 8px;
+  /* font-style: italic; */
+}

@@ -119,3 +119,14 @@
 .locationName {
   color: var(--marketplaceColor);
 }
+
+
+
+.subTitle {
+  display: block;
+  font-size: 21px;
+  font-weight: normal;
+  letter-spacing: normal;
+  /* font-style: italic; */
+  margin-top: 8px;
+}

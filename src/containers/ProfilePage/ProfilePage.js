@@ -75,8 +75,12 @@ export class ProfilePageComponent extends Component {
 
   redirectOrAllow() {
     if(this.props.currentUser) {
-     
-      if(!this.props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
+      
+      if(!this.props.currentUser.attributes.profile.protectedData.membershipInfo ) {
+        return true;
+      }
+
+      if(this.props.currentUser.attributes.profile.protectedData.membershipInfo && !this.props.currentUser.attributes.profile.protectedData.membershipInfo.success) {
         return true;
       }
 
