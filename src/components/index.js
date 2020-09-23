@@ -183,3 +183,4 @@ export { default as TransactionPanel } from './TransactionPanel/TransactionPanel
 export { default as SignupPaymentComponent } from './SignupPaymentComponent/SignupPaymentComponent';
 export {default as SignupImageField} from './SignupImageField/SignupImageField';
 export {default as MembershipPaymentModal} from './MembershipPaymentModal/MembershipPaymentModal';
+export {default as HeroSlider} from './HeroSlider/HeroSlider';
