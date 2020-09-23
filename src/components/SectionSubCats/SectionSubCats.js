@@ -57,7 +57,7 @@ const SectionSubCats = props => {
       <div>
         {/* <FormattedMessage id="SectionLocations.title" /> */}
         <h1 className={css.title}>Get Expert Advice</h1>
-        <span className={css.subTitle}>Save time & get results by leveraging off requests.</span> 
+        <span className={css.subTitle}>Save time &amp; get results by leveraging expertise.</span> 
       </div>
       <div className={css.locations}>
         {locationLink(

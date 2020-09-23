@@ -61,7 +61,7 @@ const SectionPropertyType = props => {
           '?address=New%20York%20City%2C%20New%20York%2C%20USA&bounds=40.917576401307%2C-73.7008392055224%2C40.477399%2C-74.2590879797556'
         )}
         {locationLink(
-          'Multi let & HMO',
+          'Renovation',
           vimage,
           '?address=Los%20Angeles%2C%20California%2C%20USA&bounds=34.161440999758%2C-118.121305008073%2C33.9018913203336%2C-118.521456965901'
         )}

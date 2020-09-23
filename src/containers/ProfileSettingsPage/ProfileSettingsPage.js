@@ -56,8 +56,6 @@ export class ProfileSettingsPageComponent extends Component {
     } 
 
   }
-
-
   
   
   render() {

@@ -121,6 +121,7 @@ class SignupPaymentComponent extends Component {
                         imageUploadState={imageUploadState}
                         onRemoveExtraImage={onRemoveExtraImage}
                         openPaymentPopup={togglePaymentModal}
+                        showInitialMessageInput={false}
                         
                     />
 
