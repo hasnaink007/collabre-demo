@@ -5,6 +5,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { deserialize } = require('./api-util/sdk');
 
+const {Storage} = require('@google-cloud/storage');
+
 const router = express.Router();
 
 
@@ -19,6 +21,7 @@ router.post('/uploadFile',function (req,res) {
 
     let saveFileName = `${fileName}${randomString}.${extension}`;
     
+    // console.log(extraImage);
     extraImage.mv('./uploads/'+saveFileName);
 
 
