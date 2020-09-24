@@ -123,7 +123,7 @@ export const uploadImagesToStorage = (fileObj,cb) => {
   
   }).then((res) => {  
     
-    res.image_url = `${apiBaseUrl()}${res.image_url}`
+    res.image_url = `${res.image_url}`
 
     cb(res);
   })
