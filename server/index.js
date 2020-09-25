@@ -40,6 +40,11 @@ const { sitemapStructure } = require('./sitemap');
 const csp = require('./csp');
 const sdkUtils = require('./api-util/sdk');
 
+const FileHandlingHooks = require('./fileHandlingHooks');
+const fileUpload = require('express-fileupload');
+const customStripeChages = require('./customStripeCharges')
+
+
 const buildPath = path.resolve(__dirname, '..', 'build');
 const env = process.env.REACT_APP_ENV;
 const dev = process.env.REACT_APP_ENV === 'development';
@@ -130,6 +135,12 @@ app.use('/static', express.static(path.join(buildPath, 'static')));
 app.use('/robots.txt', express.static(path.join(buildPath, 'robots.txt')));
 app.use(cookieParser());
 
+
+app.use(fileUpload({
+  createParentPath:true
+}));
+
+
 // Use basic authentication when not in dev mode. This is
 // intentionally after the static middleware to skip basic auth for
 // static resources.
@@ -147,6 +158,10 @@ if (!dev) {
 
 // Server-side routes that do not render the application
 app.use('/api', apiRouter);
+app.use('/files',FileHandlingHooks);
+app.use('/customStripecharges',customStripeChages);
+
+
 
 const noCacheHeaders = {
   'Cache-control': 'no-cache, no-store, must-revalidate',
