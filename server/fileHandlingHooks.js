@@ -11,7 +11,7 @@ const { deserialize } = require('./api-util/sdk');
 const S3 = require('aws-sdk/clients/s3');
 const AWS_ACCESS_KEY = process.env.AWS_S3_ACCESS_KEY || '';
 const AWS_SECRET_KEY = process.env.AWS_S3_SECRET_KEY || '';
-
+const AWS_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || '';
 const s3Instance = new S3({
     accessKeyId:AWS_ACCESS_KEY,
     secretAccessKey:AWS_SECRET_KEY
@@ -24,7 +24,7 @@ const s3Instance = new S3({
 function uploadToAws({filename,filedata},cb) {
 
     var params = {
-        Bucket:'collab-test-storage',
+        Bucket:AWS_BUCKET_NAME,
         ACL:'public-read',
         Key: filename,
         Body:filedata
