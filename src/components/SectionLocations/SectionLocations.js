@@ -4,7 +4,10 @@ import { FormattedMessage } from '../../util/reactIntl';
 import classNames from 'classnames';
 import { lazyLoadWithDimensions } from '../../util/contextHelpers';
 
-import { NamedLink } from '../../components';
+import { 
+  NamedLink,
+  SliderComponent
+} from '../../components';
 
 import css from './SectionLocations.css';
 
@@ -52,6 +55,12 @@ const SectionLocations = props => {
 
   const classes = classNames(rootClassName || css.root, className);
 
+  const sliderOptions = {
+    initialIndex: 1,
+    contain:true,
+    wrapAround:false,
+  }
+
   return (
     <div className={classes}>
       <div className={css.title}>
@@ -59,21 +68,25 @@ const SectionLocations = props => {
         <span className={css.subTitle}><FormattedMessage id="SectionLocations.subtitle" /></span>
       </div>
       <div className={css.locations}>
-        {locationLink(
-          'USA',
-          nyImage,
-          '?address=New%20York%20City%2C%20New%20York%2C%20USA&bounds=40.917576401307%2C-73.7008392055224%2C40.477399%2C-74.2590879797556'
-        )}
-        {locationLink(
-          'UK',
-          laImage,
-          '?address=Los%20Angeles%2C%20California%2C%20USA&bounds=34.161440999758%2C-118.121305008073%2C33.9018913203336%2C-118.521456965901'
-        )}
-        {locationLink(
-          'Australia',
-          sfImage,
-          '?address=San%20Francisco%2C%20California%2C%20USA&bounds=37.8324430069081%2C-122.354995082683%2C37.6044780500533%2C-122.517910874663'
-        )}
+        <SliderComponent
+          options={sliderOptions}
+        >
+          {locationLink(
+            'USA',
+            nyImage,
+            '?address=New%20York%20City%2C%20New%20York%2C%20USA&bounds=40.917576401307%2C-73.7008392055224%2C40.477399%2C-74.2590879797556'
+          )}
+          {locationLink(
+            'UK',
+            laImage,
+            '?address=Los%20Angeles%2C%20California%2C%20USA&bounds=34.161440999758%2C-118.121305008073%2C33.9018913203336%2C-118.521456965901'
+          )}
+          {locationLink(
+            'Australia',
+            sfImage,
+            '?address=San%20Francisco%2C%20California%2C%20USA&bounds=37.8324430069081%2C-122.354995082683%2C37.6044780500533%2C-122.517910874663'
+          )}
+        </SliderComponent>
       </div>
     </div>
   );

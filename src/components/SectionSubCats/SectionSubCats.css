@@ -12,6 +12,11 @@
 }
 
 .locations {
+  margin-top: 15px;
+}
+
+
+/* .locations {
   display: flex;
   flex-direction: column;
   margin-top: 0px;
@@ -19,9 +24,9 @@
   @media (--viewportMedium) {
     flex-direction: row;
     margin-top: 33px;
-  }
+  } 
 }
-
+*/
 .location {
   width: 100%;
   margin-top: 25px;
@@ -31,8 +36,23 @@
     text-decoration: none;
   }
 
+  
+  @media (--viewportSmall) {
+    width:48%;
+    margin-left:1%;
+  }
+
+
   @media (--viewportMedium) {
     margin-top: 0;
+    width:48%;
+    margin-left:1%;
+  }
+
+  @media (--viewportLarge) {
+    margin-top: 0;
+    width:32%;
+    margin-left:1%;
   }
 }
 
@@ -72,6 +92,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease 0s;
+  background-size:cover;
   @media (--viewportMedium) {
    /* padding-bottom: calc(2 / 3 * 100%);  3:2 Aspect Ratio */
   }
