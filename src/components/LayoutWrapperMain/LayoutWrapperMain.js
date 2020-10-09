@@ -1,6 +1,8 @@
 /**
  * This is a wrapper component for different Layouts. Main content should be added to this wrapper.
  */
+
+ 
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';

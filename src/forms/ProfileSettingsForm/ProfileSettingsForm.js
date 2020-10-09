@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, string } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { Field, Form as FinalForm } from 'react-final-form';
@@ -10,7 +10,7 @@ import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { isUploadImageOverLimitError } from '../../util/errors';
 import { Form, Avatar, Button, ImageFromFile, IconSpinner, FieldTextInput } from '../../components';
-
+import {SignupPaymentForm} from '../';
 import css from './ProfileSettingsForm.css';
 
 const ACCEPT_IMAGES = 'image/*';
@@ -23,6 +23,11 @@ class ProfileSettingsFormComponent extends Component {
     this.uploadDelayTimeoutId = null;
     this.state = { uploadDelay: false };
     this.submittedValues = {};
+  }
+
+  componentDidMount() {
+
+    this.props.loadExtraImages();
   }
 
   componentDidUpdate(prevProps) {
@@ -40,6 +45,7 @@ class ProfileSettingsFormComponent extends Component {
     window.clearTimeout(this.uploadDelayTimeoutId);
   }
 
+  
   render() {
     return (
       <FinalForm
@@ -64,6 +70,7 @@ class ProfileSettingsFormComponent extends Component {
           } = fieldRenderProps;
 
           const user = ensureCurrentUser(currentUser);
+
 
           // First name
           const firstNameLabel = intl.formatMessage({
@@ -291,7 +298,18 @@ class ProfileSettingsFormComponent extends Component {
                 <p className={css.bioInfo}>
                   <FormattedMessage id="ProfileSettingsForm.bioInfo" />
                 </p>
+                
+                <SignupPaymentForm 
+                  onImageUpload={this.props.onCertificateImageUpload}
+                  onRemoveExtraImage={this.props.onRemoveCertificateImage}
+                  imageUploadState={this.props.imageUploadState}
+                />
+
+
               </div>
+
+
+
               {submitError}
               <Button
                 className={css.submitButton}
@@ -327,6 +345,9 @@ ProfileSettingsFormComponent.propTypes = {
   updateInProgress: bool.isRequired,
   updateProfileError: propTypes.error,
   updateProfileReady: bool,
+  onCertificateImageUpload:func,
+  onRemoveCertificateImage:func,
+  
 
   // from injectIntl
   intl: intlShape.isRequired,

@@ -82,7 +82,7 @@ class SignupPaymentComponent extends Component {
     }
 
 
-    onStripeInitialized(stripe) {
+    onStripeInitialized = function(stripe) {
 
         this.setState({
             stripe:stripe
@@ -126,15 +126,6 @@ class SignupPaymentComponent extends Component {
                     />
 
                 </div>
-                {/* stripePaymentInProgress */}
-                <MembershipPaymentModal 
-                    onClose={togglePaymentModal}
-                    isOpened={paymentPopupOpened}
-                    onSubmitPayment={this.handlePaymentSubmit}
-                    onStripeInitialized={this.onStripeInitialized}
-                    paymentInProgress={stripePaymentInProgress}
-                    currentUser={currentUser}
-                />
             </div>
         )
     }

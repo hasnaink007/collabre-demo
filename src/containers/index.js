@@ -23,3 +23,4 @@ export { default as TermsOfServicePage } from './TermsOfServicePage/TermsOfServi
 export { default as TopbarContainer } from './TopbarContainer/TopbarContainer';
 export { default as TransactionPage } from './TransactionPage/TransactionPage';
 export {default as PaymentAuthLogicWrapper} from './PaymentAuthLogic/PaymentAuthLogic'
+export {default as PaymentPage} from './PaymentPage/PaymentPage';

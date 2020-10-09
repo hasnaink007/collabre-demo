@@ -142,6 +142,7 @@ export const renderApp = (url, serverContext, preloadedState) => {
   const body = ReactDOMServer.renderToString(
     <ServerApp url={url} context={serverContext} helmetContext={helmetContext} store={store} />
   );
+  
   const { helmet: head } = helmetContext;
   return { head, body };
 };

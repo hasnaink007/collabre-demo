@@ -76,10 +76,6 @@ export class ProfileSettingsPageComponent extends Component {
       onPaymentRequest,
       onRemoveImage,
       loadExtraImages,
-      chargeStripeCard,
-      paymentPopupOpened,
-      togglePaymentModal,
-      stripePaymentInProgress
     } = this.props;
 
 
@@ -133,7 +129,7 @@ export class ProfileSettingsPageComponent extends Component {
     const profileImageId = user.profileImage ? user.profileImage.id : null;
     const profileImage = image || { imageId: profileImageId };
 
-    const paymentDone = !currentUser ? true : currentUser.attributes.profile.protectedData.membershipInfo ? currentUser.attributes.profile.protectedData.membershipInfo.success : false;
+    const paymentDone = !currentUser ? true : currentUser.attributes.profile.protectedData.extra_images ? currentUser.attributes.profile.protectedData.membershipInfo.success : false;
 
     const getProfileSettingForm = user.id ? (
       <ProfileSettingsForm
@@ -146,28 +142,29 @@ export class ProfileSettingsPageComponent extends Component {
         updateInProgress={updateInProgress}
         uploadImageError={uploadImageError}
         updateProfileError={updateProfileError}
+        onCertificateImageUpload={e => onExtraImageUploadHandler(e,onSignupImageUpload)}
+        onRemoveCertificateImage={onRemoveExtraImage}
         onSubmit={handleSubmit}
+        {...this.props}
       />) : null;
 
 
-      const getPaymentandImagesForm = (
-        <SignupPaymentComponent
-          {...this.props}
-          onImageUpload={e => onExtraImageUploadHandler(e,onSignupImageUpload)}
-          onPaymentSubmit={onSignupPaymentSubmit}
-          isFormSubmitting={this.props.membershipPaymentInProgress}
-          onRemoveExtraImage={onRemoveExtraImage}
-          triggerExtraImages={triggerExtraImages}
-          chargeStripeCard={this.props.chargeStripeCard}
-          paymentPopupOpened={paymentPopupOpened}
-          togglePaymentModal={togglePaymentModal}
-          stripePaymentInProgress={stripePaymentInProgress}
-        />
-      );
+      // const getPaymentandImagesForm = (
+      //   <SignupPaymentComponent
+      //     {...this.props}
+          
+      //     onPaymentSubmit={onSignupPaymentSubmit}
+      //     isFormSubmitting={this.props.membershipPaymentInProgress}
+          
+      //     triggerExtraImages={triggerExtraImages}
+      //     chargeStripeCard={this.props.chargeStripeCard}
+      //     paymentPopupOpened={paymentPopupOpened}
+      //     togglePaymentModal={togglePaymentModal}
+      //     stripePaymentInProgress={stripePaymentInProgress}
+      //   />
+      // );
 
-    const profileSettingsForm = paymentDone ? (
-      getProfileSettingForm
-    ) : getPaymentandImagesForm;
+    const profileSettingsForm = getProfileSettingForm;
 
     const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
@@ -275,8 +272,6 @@ const mapDispatchToProps = dispatch => ({
   onPaymentRequest : data => dispatch(initializeMembershipPayment(data)),
   onRemoveImage: data => dispatch(onRemoveImage(data)),
   loadExtraImages: data => dispatch(loadExtraImagesOnLoad(data)),
-  chargeStripeCard: data => dispatch(chargeStripeCardOnToken(data)),
-  togglePaymentModal: data => dispatch(togglePaymentPopup(data))
 });
 
 const ProfileSettingsPage = compose(

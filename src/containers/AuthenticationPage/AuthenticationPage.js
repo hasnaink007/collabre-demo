@@ -48,7 +48,6 @@ export class AuthenticationPageComponent extends Component {
 
 
   render() {
-    console.log(this.props);
     const {
       authInProgress,
       currentUser,

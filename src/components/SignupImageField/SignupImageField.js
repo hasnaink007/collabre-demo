@@ -59,9 +59,9 @@ class SignupImageField extends Component {
     }
 
     getThisComponentimage = () => {
-            
-            if(this.props.imageUploadState) {
                 
+            if(this.props.imageUploadState) {
+                    
                 
                return this.props.imageUploadState.find((value) => {
 

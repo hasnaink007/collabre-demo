@@ -39,6 +39,8 @@ export const SEND_VERIFICATION_EMAIL_REQUEST = 'app/user/SEND_VERIFICATION_EMAIL
 export const SEND_VERIFICATION_EMAIL_SUCCESS = 'app/user/SEND_VERIFICATION_EMAIL_SUCCESS';
 export const SEND_VERIFICATION_EMAIL_ERROR = 'app/user/SEND_VERIFICATION_EMAIL_ERROR';
 
+export const PAYMENT_INFORMATION = 'app/user/PAYMENT_INFORMATION';
+
 // ================ Reducer ================ //
 
 const mergeCurrentUser = (oldCurrentUser, newCurrentUser) => {
@@ -142,6 +144,12 @@ export default function reducer(state = initialState, action = {}) {
         sendVerificationEmailError: payload,
       };
 
+    case PAYMENT_INFORMATION:
+      return {
+        ...state,
+        paymentStatus:payload
+      }
+
     default:
       return state;
   }
@@ -238,6 +246,14 @@ export const sendVerificationEmailError = e => ({
   error: true,
   payload: e,
 });
+
+
+export const paymentInformation = (data) => {
+  return {
+    type: PAYMENT_INFORMATION,
+    payload: data
+  }
+}
 
 // ================ Thunks ================ //
 
@@ -354,7 +370,14 @@ export const fetchCurrentUser = (params = null) => (dispatch, getState, sdk) => 
       if (entities.length !== 1) {
         throw new Error('Expected a resource in the sdk.currentUser.show response');
       }
-      const currentUser = entities[0];
+      const currentUser = entities[0];     
+
+      const paymentInfo = (currentUser.attributes.profile.protectedData.membershipInfo) ? currentUser.attributes.profile.protectedData.membershipInfo : false;
+      
+      // Sending Payment info of this user, to check on frontned
+      dispatch(paymentInformation(paymentInfo));
+      
+
 
       // Save stripeAccount to store.stripe.stripeAccount if it exists
       if (currentUser.stripeAccount) {

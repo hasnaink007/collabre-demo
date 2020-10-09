@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import { NotFoundPage } from './containers';
 import { NamedRedirect } from './components';
 import { locationChanged } from './ducks/Routing.duck';
@@ -18,6 +18,21 @@ const canShowComponent = props => {
   const { auth } = route;
   return !auth || isAuthenticated;
 };
+
+const isPaymentDone = props => {  
+  
+  const paid = (props.paymentStatus) ? props.paymentStatus.success : false;
+  // console.log('paymentinfo', props);
+
+  if(props.route.memberonly) {
+    return paid;
+  } else {
+    return true;
+  }
+
+  
+  // return true;
+}
 
 const callLoadData = props => {
   const { match, location, route, dispatch, logoutInProgress } = props;
@@ -93,14 +108,44 @@ class RouteComponentRenderer extends Component {
     if (!canShow) {
       staticContext.unauthorized = true;
     }
-    return canShow ? (
-      <RouteComponent params={match.params} location={location} />
-    ) : (
+
+    // return canShow ? (
+    //   <RouteComponent params={match.params} location={location} />
+    // ) : (
+    //   <NamedRedirect
+    //         name={authPage}
+    //         state={{ from: `${location.pathname}${location.search}${location.hash}` }}
+    //       />
+    // );
+
+    const paymentRoute = "PaymentPage";
+    
+    const paymentDone = isPaymentDone(this.props);
+    // console.log(paymentDone);
+    if(canShow) {
+
+      
+      return paymentDone ? (
+        <RouteComponent params={match.params} location={location} />
+      ) :( 
+        // <RouteComponent params={match.params} location={location} />
       <NamedRedirect
-        name={authPage}
-        state={{ from: `${location.pathname}${location.search}${location.hash}` }}
-      />
-    );
+            name={paymentRoute}
+            state={{ from: `${location.pathname}${location.search}${location.hash}` }}
+          />
+      )
+
+    } else {
+
+        return (<NamedRedirect
+            name={authPage}
+            state={{ from: `${location.pathname}${location.search}${location.hash}` }}
+          />)
+
+    }
+
+
+ 
   }
 }
 
@@ -121,8 +166,8 @@ RouteComponentRenderer.propTypes = {
 };
 
 const Routes = (props, context) => {
-  const { isAuthenticated, logoutInProgress, staticContext, dispatch, routes } = props;
-
+  const { isAuthenticated, logoutInProgress, staticContext, dispatch, routes, paymentStatus } = props;
+  
   const toRouteComponent = route => {
     const renderProps = {
       isAuthenticated,
@@ -130,6 +175,7 @@ const Routes = (props, context) => {
       route,
       staticContext,
       dispatch,
+      paymentStatus,
     };
 
     // By default, our routes are exact.
@@ -177,9 +223,10 @@ Routes.propTypes = {
 };
 
 const mapStateToProps = state => {
+  
   const { isAuthenticated, logoutInProgress } = state.Auth;
- 
-  return { isAuthenticated, logoutInProgress };
+  const paymentStatus = state.user.paymentStatus;
+  return { isAuthenticated, logoutInProgress , paymentStatus: paymentStatus};
 };
 
 // Note: it is important that the withRouter HOC is **outside** the

@@ -128,7 +128,6 @@ export const authInfo = () => (dispatch, getState, sdk) => {
   return sdk
     .authInfo()
     .then(info => { 
-      
       dispatch(authInfoSuccess(info))
      
     })
