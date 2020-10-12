@@ -12,7 +12,7 @@ const apiRouter = require('./apiRouter');
 const FileHandlingHooks = require('./fileHandlingHooks');
 const fileUpload = require('express-fileupload');
 const customStripeChages = require('./customStripeCharges')
-
+const system_pref_api = require('./system-preferences-api');
 
 const radix = 10;
 const PORT = parseInt(process.env.REACT_APP_DEV_API_SERVER_PORT, radix) ;
@@ -37,6 +37,8 @@ app.use(express.static('./uploads'))
 app.use('/api', apiRouter);
 app.use('/files',FileHandlingHooks);
 app.use('/customStripecharges',customStripeChages);
+app.use('/system-api',system_pref_api)
+
 
 app.listen(PORT, () => {
   console.log(`API server listening on ${PORT}`);

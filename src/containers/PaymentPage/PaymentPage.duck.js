@@ -9,14 +9,3 @@ export const chargeStripeCard = (params) =>{
     
 }
 
-
-export const togglePaymentBox = () => {
-    togglePaymentPopup();
-}
-
-
-export const isUserPaid = (user) => {
-
-
-
-}
