@@ -24,3 +24,4 @@ export { default as TopbarContainer } from './TopbarContainer/TopbarContainer';
 export { default as TransactionPage } from './TransactionPage/TransactionPage';
 export {default as PaymentAuthLogicWrapper} from './PaymentAuthLogic/PaymentAuthLogic'
 export {default as PaymentPage} from './PaymentPage/PaymentPage';
+export {default as ManagePage} from './ManagePreferences/ManagePage';

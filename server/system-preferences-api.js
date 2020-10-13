@@ -7,6 +7,7 @@ const mongouri = process.env.MONGODB_URL;
 
 const express  = require('express');
 const router = express.Router();
+const bodyparser = require('body-parser');
 
 mongoose.connect(mongouri,{useNewUrlParser:true, useUnifiedTopology:true});
 
@@ -15,7 +16,10 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console,'Mongo DB Connection error:'))
 
 const Preferences = require('./models/preferences');
+const HomepageSettings = require('./models/homepage_settings');
 
+
+router.use(bodyparser.json());
 
 router.get('/savePreference',(req,res) => {
 
@@ -28,14 +32,67 @@ router.get('/savePreference',(req,res) => {
             res.json({success:true})
             return;
         }
-        
-        console.log(res);
+
         res.json(res).status(201);
     });
 
     
 
-})
+});
+
+router.post('/updateSections', (req, res) => {
+    console.log(req.body);
+
+    const sections = req.body.sections ? req.body.sections : null;
+
+    if(!sections) { 
+        res.send({
+            success:false,
+            error: 'Sections data cannot be empty.'
+        });
+    }
+
+    // sections: [
+        // {
+        //     title:'',
+        //     description:'',
+        //     items: [
+        //         {
+        //             label:'',
+        //             url:'',
+        //             image:'',
+        //         }
+        //     ]
+        // }
+
+    // ]
+
+    HomepageSettings.updateOne({name:"HomepageBlocks"},{
+        name:'HomepageBlocks',
+        sections: sections
+    }, {upsert:true}, (err,document) => {
+        if(err) res.json({...err,success:false,message:"There is an error saving the data."}).status(201)
+        let finalResponse = {...document, success:true};
+        res.json(finalResponse).status(200);
+    })
+
+});
+
+
+router.get('/updateSections', (req,res) => {
+
+    HomepageSettings.find({
+        name:"HomepageBlocks"
+    }, (err, document) => {
+        
+        res.json(document).status(200);
+
+    })
+
+
+});
+
+
 
 
 module.exports = router;

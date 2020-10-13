@@ -22,8 +22,8 @@ import {
   StyleguidePage,
   TermsOfServicePage,
   TransactionPage,
-  PaymentAuthLogicWrapper,
-  PaymentPage
+  PaymentPage,
+  ManagePage
 } from './containers';
 
 // routeConfiguration needs to initialize containers first
@@ -179,6 +179,13 @@ const routeConfiguration = () => {
       auth: true,
       authPage: 'LoginPage',
       component: props => <ProfileSettingsPage {...props} />,
+    },
+    {
+      path: '/manage-page',
+      name: 'ManagePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: props => <ManagePage {...props} />,
     },
     {
       path: '/login',
