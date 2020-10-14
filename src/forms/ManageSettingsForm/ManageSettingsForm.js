@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import css from './ManageSettings.css'
-import { Form as FinalForm } from 'react-final-form';
-
+import {Form as FinalForm} from 'react-final-form';
+import {FieldTextInput} from '../../components';
 
 const propTypes = {}
 
@@ -27,10 +27,18 @@ class ManageSettingsForm extends Component {
     }
 
     sectionSet = (section) => {
-        console.log(section);
         return (
             <>
-            <input type="text" name={section.name} placeHolder="Section Title"></input>
+            
+
+                <FieldTextInput
+                type="text"
+                id="5454"
+                name="name"
+                label="Your First Name"
+                placeholder="eg. John Doe"
+                />
+                {/* <input type="text" name={section.name} placeHolder="Section Title"></input> */}
             
             </>
         )
@@ -63,7 +71,9 @@ class ManageSettingsForm extends Component {
             <FinalForm {...this.props} 
             
             render={(renderProps) => {
-        
+                const {sections} = renderProps;
+
+
                 return (
                 <div className="">
                     <h3>Manage Sections</h3>
