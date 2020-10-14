@@ -21,24 +21,38 @@ const HomepageSettings = require('./models/homepage_settings');
 
 router.use(bodyparser.json());
 
-router.get('/savePreference',(req,res) => {
+// router.get('/savePreference',(req,res) => {
 
-    const preference = Preferences.create({
-        meta_key:'admin_email',
-        meta_value: 'testing@gmail.com'
-    },(err,res) => {
-        if(err) {
-            console.log(err);
-            res.json({success:true})
-            return;
-        }
+//     const preference = Preferences.create({
+//         meta_key:'admin_email',
+//         meta_value: 'testing@gmail.com'
+//     },(err,res) => {
+//         if(err) {
+//             console.log(err);
+//             res.json({success:true})
+//             return;
+//         }
 
-        res.json(res).status(201);
-    });
+//         res.json(res).status(201);
+//     });
 
     
 
-});
+// });
+
+router.get('/setting',(req,res) => {
+console.log(req.body.key);
+    Preferences.findOne({meta_key:req.body.key}, (err, document) => {
+        if(err) res.send({...err,success:false,message:"Key not found"})
+        console.log(document);
+        if(!document) res.send({success:false,message:"no record found."}).status(200);
+        
+        res.status(200).send({...document._doc, success:true});
+
+    })
+
+})
+
 
 router.post('/updateSections', (req, res) => {
     console.log(req.body);
@@ -53,17 +67,17 @@ router.post('/updateSections', (req, res) => {
     }
 
     // sections: [
-        // {
-        //     title:'',
-        //     description:'',
-        //     items: [
-        //         {
-        //             label:'',
-        //             url:'',
-        //             image:'',
-        //         }
-        //     ]
-        // }
+    //     {
+    //         title:'',
+    //         description:'',
+    //         items: [
+    //             {
+    //                 label:'',
+    //                 url:'',
+    //                 image:'',
+    //             }
+    //         ]
+    //     }
 
     // ]
 

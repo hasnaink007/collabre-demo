@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import css from './ManageSettings.css'
-import { Form as FinalForm } from 'react-final-form';
-
+import {Form as FinalForm} from 'react-final-form';
+import {FieldTextInput} from '../../components';
 
 const propTypes = {}
 
@@ -49,6 +49,7 @@ class ManageSettingsForm extends Component {
         }
     }
 
+
     // sections: [
     //     {
     //         title:'',
@@ -69,7 +70,7 @@ class ManageSettingsForm extends Component {
         if( section.items.length ){
             items_heading = <h4>Items</h4>
         }
-        //==============
+        // ==============
 
         return (
             <div>
@@ -79,6 +80,7 @@ class ManageSettingsForm extends Component {
                 {items_heading}
                 {section.items.map((item,index) => { return this.item(item, index, section_index) })}
                 <button type="button" onClick={event => this.addItem(event,section_index)} className={css.addItemBtn}> Add Item </button>
+
             
             </div>
         )
@@ -166,7 +168,9 @@ class ManageSettingsForm extends Component {
             <FinalForm {...this.props} 
             
             render={(renderProps) => {
-        
+                const {sections} = renderProps;
+
+
                 return (
                 <div className="">
                     <h3>Manage Sections</h3>

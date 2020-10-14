@@ -173,3 +173,75 @@ export const chargeStripePayment = function(params) {
 
 
 }
+
+
+
+export const getSectionsDataFromServer = () => {
+  const url = `${apiBaseUrl()}/system-api/updateSections`;
+
+
+  return new Promise((resolve, reject) => {
+
+    fetch(url,{
+      method:'GET',
+      headers:{
+        'Content-type':'application/json'
+      }
+    })  
+
+    .then((res) => res.json())
+
+    .then(response => {
+
+    
+      resolve({...response,success:true});
+
+    })
+
+    .catch((err) => {
+
+      reject({...err,success:false});
+
+    });
+
+
+  });
+
+
+}
+
+
+export const saveSectionDataOnServer = (data) => {
+  const url = `${apiBaseUrl()}/system-api/updateSections`;
+
+
+  return new Promise((resolve, reject) => {
+
+    
+      fetch(url,{
+        method:'POST',
+        body:JSON.stringify({sections:data}),
+        headers: {
+          'Content-type':'application/json'
+        }
+      })
+      
+      .then(res => res.json())
+
+      .then((response) => {
+        
+        if(response.success) {
+          resolve(response);
+          return;
+        } else {
+          reject(response);
+          return;
+        }
+      
+
+      })
+
+  })
+
+
+}
