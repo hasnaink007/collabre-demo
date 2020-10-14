@@ -24,19 +24,6 @@
 	font-size: 12px;
 	padding: 0px 20px;
 }
-.closeBtn{
-	line-height: 12px;
-	background: red;
-	color: #fff;
-	border-radius: 50%;
-	text-align: center;
-	cursor: pointer;
-	width: 15px;
-	height: 15px;
-	display: block;
-	margin-left: auto;
-
-}
 .removeBtn{
 	background: red;
 	border: 0px;

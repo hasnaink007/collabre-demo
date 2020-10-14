@@ -61,7 +61,7 @@ class ManageSettingsForm extends Component {
         if( items_heading.length > 0 ){
             items_heading = <h4>Items</h4>
         }
-        // ==============
+        //==============
 
         return (
             <div>
