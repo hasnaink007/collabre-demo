@@ -69,6 +69,11 @@ class ManagePageComponent extends Component {
     }
 
 
+    handleSubmit = values => {
+        console.log(values)
+    }
+
+
 
     render() {
         
@@ -100,7 +105,7 @@ class ManagePageComponent extends Component {
                     <div className={css.formWrapper}>
 
                         <ManageSettingsForm 
-                            onSubmit={handleSubmit}
+                            onFormSubmit={this.handleSubmit}
                             sections={sections}
                         />
 
