@@ -69,9 +69,65 @@ class ManagePageComponent extends Component {
     }
 
 
-    handleSubmit = values => {
-        console.log(values)
+    handleSubmit = (values, structure) => {
+        // console.log(values)
+        console.log(structure)
+        let formData = []
+
+        structure.forEach( (section, s_index) =>{
+            // console.log(section)
+            
+            let section_structure = {
+                    title: '',
+                    description: '',
+                    items: []
+                }
+                
+            section_structure.title = values[`s_title_${s_index}`] || ''
+            section_structure.description = values[`s_desc_${s_index}`] || ''
+
+            section.items.forEach( (item, item_index) =>{
+                let item_structure = {
+                    label: '',
+                    url: '',
+                    image: ''
+                }
+
+                item_structure.label = values[`label_${s_index}_${item_index}`] || ''
+                item_structure.url = values[`url_${s_index}_${item_index}`] || ''
+
+                section_structure.items.push(item_structure)
+            })
+
+            formData.push(section_structure)
+        })
+
+        console.log(formData)
+        const {saveSectionsData} = this.props
+        saveSectionsData(formData)
+        // updateSectionsData(formData)
     }
+
+
+
+    /*sections = [
+                {
+                    name:'section_1',
+                    desc: 'descriptipn_1',
+                    items: []
+                },
+                {
+                    name:'section_3',
+                    desc: 'descriptipn_1',
+                    items: [
+                        {
+                            label: 'something',
+                            url: 'someURL',
+                            image: 'someImage'
+                        }
+                    ]
+                }
+            ]*/
 
 
 

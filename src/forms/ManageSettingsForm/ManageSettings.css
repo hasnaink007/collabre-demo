@@ -4,6 +4,7 @@
 	margin-left: 20px;
 	padding: 20px;
 	margin-bottom: 20px;
+	position: relative;
 }
 .itemsContainer{
 	padding: 20px;
@@ -19,7 +20,6 @@
 	border: 0px;
 	display: block;
 	margin-left: auto;
-	border-radius: 10px;
 	cursor: pointer;
 	font-size: 12px;
 	padding: 0px 20px;
@@ -30,10 +30,36 @@
 	color: #fff;
 	line-height: 15px;
 	font-size: 11px;
-	margin-top: 15px;
+	cursor: pointer;
+}
+.removeItem{
+	position: absolute;
+	left: 0px;
+	top: 0px;
 }
 .item_cols{
 	display: grid;
 	grid-template-columns: 1fr .6fr;
 	grid-gap: 20px;
+}
+.section_header{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.singl_section{
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 15px;
+	padding-bottom: 15px;
+}
+.item_col1, .section_fields{
+	display: grid;
+	grid-gap: 20px;
+}
+.item_col1 input{
+	padding-bottom: 0px;
+}
+.section_fields input{
+	padding-bottom: 0px;
+	margin-left: 7px;
 }

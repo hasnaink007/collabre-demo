@@ -13,31 +13,7 @@ const defaultProps = {}
 class ManageSettingsForm extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            sections:[
-                {
-                    name:'section_1',
-                    desc: 'descriptipn_1',
-                    items: []
-                },
-                {
-                    name:'section_3',
-                    desc: 'descriptipn_1',
-                    items: [
-                        {
-                            label: 'something',
-                            url: 'someURL',
-                            image: 'someImage'
-                        },
-                        {
-                            label: 'something',
-                            url: 'someURL',
-                            image: 'someImage'
-                        }
-                    ]
-                }
-            ]
-        }
+        this.state = {sections: []}
     }
 
 
@@ -61,28 +37,35 @@ class ManageSettingsForm extends Component {
         if( items_heading.length > 0 ){
             items_heading = <h4>Items</h4>
         }
-        //==============
+
+//======================
 
         return (
-            <div>
-                <h3>Section</h3>
-                
-                <FieldTextInput
-                 type="text"
-                 name={`s_title_${section_index}`}
-                 id={`section_${section_index}`}
-                 label="Section Title"
-                 placeholder="Section Title" />
+            <div key={section_index} className={css.singl_section}>
+                <div className={css.section_header} >
+                    <h3>Section</h3>
+                    <button className={css.removeBtn} onClick={e => {this.removeSection(section_index)}}>X</button>
+                </div>
 
 
-                 <FieldTextInput
-                 type="text"
-                 name={`s_desc_${section_index}`}
-                 id={`section_${section_index}`}
-                 label="Section Description"
-                 placeholder="Section Description" />
+                <div className={css.section_fields}>
+                    <FieldTextInput
+                     type="text"
+                     name={`s_title_${section_index}`}
+                     id={`section_${section_index}`}
+                     label="Section Title"
+                     placeholder="Section Title"
+                     defaultValue={section.title} />
 
-                {/*<input type="text" name={section.desc} placeholder="Section Description"/>*/}
+
+                     <FieldTextInput
+                     type="text"
+                     name={`s_desc_${section_index}`}
+                     id={`section_${section_index}`}
+                     label="Section Description"
+                     placeholder={"Section Description"}
+                     defaultValue={section.description} />
+                </div>
 
                 {items_heading}
                 {section.items.map((item,index) => { return this.item(item, index, section_index) })}
@@ -113,12 +96,11 @@ class ManageSettingsForm extends Component {
     item = (item, item_index, section_index) => {
         const {
             onImageUpload,
-            imageUploadState,
-            onRemoveExtraImage} = this.props
-        // console.log(item,index,section)
-        // console.log('=========================================')
+            imageUploadState} = this.props
+
         return(
-            <div className={css.setContainer}>
+            <div key={item_index} className={css.setContainer}>
+                <button className={`${css.removeBtn} ${css.removeItem}`} onClick={event => this.removeItem(item_index, section_index)}>X</button>
                 
                 <div className={css.item_cols}>
                     <div className={css.item_col1}>
@@ -128,14 +110,16 @@ class ManageSettingsForm extends Component {
                         name={`label_${section_index}_${item_index}`}
                         id={`label_${section_index}_${item_index}`}
                         label="Item Label"
-                        placeholder={item.label} />
+                        placeholder="item.label"
+                        defaultValue={item.label} />
 
                         <FieldTextInput
                         type="url"
                         name={`url_${section_index}_${item_index}`}
                         id={`url_${section_index}_${item_index}`}
                         label="Item URL"
-                        placeholder={item.url} />
+                        placeholder="Item URL"
+                        defaultValue={item.url} />
 
                     </div>
 
@@ -153,12 +137,19 @@ class ManageSettingsForm extends Component {
 
                 </div>
 
-                    <button className={css.removeBtn} onClick={event => this.removeItem(item_index, section_index)}>Delete Item</button>
             </div>
         )
     }
 
 // `=================
+
+    removeSection = section_index => {
+        const newSections = this.state.sections
+        delete newSections[section_index]
+        this.setState({
+            ...this.state, sections : newSections
+        })
+    }
 
     removeItem = (item_index, section_index) =>{
         // console.log(item_index)
@@ -191,11 +182,32 @@ class ManageSettingsForm extends Component {
             ...this.state, sections:newArray
         })
     }
+/*
+    componentDidMount =  () => {
+        // console.clear()
+        console.log('================================')
+        console.log(this.props)
+        const {sections} = this.props
+        console.log('================================')
+        
+    }*/
 
+    static getDerivedStateFromProps(props, state) {
+    // console.log('======================')
+    // console.log(props)
+    // console.log(state)
+    // console.log('======================')
+    let sections = {...state, ...props}
+
+    return sections
+    }
 
     render() {
+
         // FinalForm
-        const {onFormSubmit} = this.props
+        const {onFormSubmit, sections} = this.props
+
+
         return (
             <FinalForm {...this.props} 
             
@@ -220,7 +232,7 @@ class ManageSettingsForm extends Component {
                 );
             }} 
             
-            onSubmit={onFormSubmit}
+            onSubmit={values => { onFormSubmit(values,this.state.sections); console.log('from on submit') } }
 
             />
     
