@@ -62,6 +62,7 @@ const routeConfiguration = () => {
     {
       path:'/paymentpage',
       name:'PaymentPage',
+      auth:true,
       component: props => <PaymentPage {...props} />
     },
     {
@@ -72,6 +73,7 @@ const routeConfiguration = () => {
     {
       path: '/s',
       name: 'SearchPage',
+      auth: true,
       memberonly:true,
       component: props => <SearchPage {...props} />,
       loadData: SearchPage.loadData,
@@ -79,6 +81,7 @@ const routeConfiguration = () => {
     {
       path: '/s/filters',
       name: 'SearchFiltersPage',
+      auth: true,
       memberonly:true,
       component: props => <SearchPage {...props} tab="filters" />,
       loadData: SearchPage.loadData,
@@ -86,6 +89,7 @@ const routeConfiguration = () => {
     {
       path: '/s/listings',
       name: 'SearchListingsPage',
+      auth: true,
       memberonly:true,
       component: props => <SearchPage {...props} tab="listings" />,
       loadData: SearchPage.loadData,
@@ -93,6 +97,7 @@ const routeConfiguration = () => {
     {
       path: '/s/map',
       name: 'SearchMapPage',
+      auth: true,
       memberonly:true,
       component: props => <SearchPage {...props} tab="map" />,
       loadData: SearchPage.loadData,
@@ -100,12 +105,14 @@ const routeConfiguration = () => {
     {
       path: '/l',
       name: 'ListingBasePage',
+      auth: true,
       memberonly:true,
       component: RedirectToLandingPage,
     },
     {
       path: '/l/:slug/:id',
       name: 'ListingPage',
+      auth: true,
       memberonly:true,
       component: props => <ListingPage {...props} />,
       loadData: ListingPage.loadData,
