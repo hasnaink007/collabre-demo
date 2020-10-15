@@ -205,7 +205,7 @@ class ManageSettingsForm extends Component {
                             <div className={css.sections}>
                                 <h3>Manage Sections</h3>
                                 {this.state.sections.map(this.sectionSet)}
-                                <Button type="button" onClick={this.addSection}>Add Section</Button>
+                                <Button type="button" onClick={this.addSection} style={{marginTop:'40px'}}>Add Section</Button>
                             </div>
 
                         </div>
