@@ -210,7 +210,7 @@ export const ensureUser = user => {
  * @param {Object} current user entity object, which is to be ensured against null values
  */
 export const ensureCurrentUser = user => {
-  const empty = { id: null, type: 'currentUser', attributes: { profile: {} }, profileImage: {} };
+  const empty = { id: null, type: 'currentUser', attributes: { profile: {protectedData: {membershipInfo:{success:false}}} }, profileImage: {} };
   return { ...empty, ...user };
 };
 
@@ -383,3 +383,17 @@ export const humanizeLineItemCode = code => {
 
   return lowercase.charAt(0).toUpperCase() + lowercase.slice(1);
 };
+
+
+
+
+
+export const ensureprotectedData = (data) => {
+
+  let shape = {membershipInfo: {
+    success:false,
+  }};
+
+  return {...shape,...data};
+
+}

@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 
 import { isScrollingDisabled } from '../../ducks/UI.duck';
-import {ensureCurrentUser} from '../../util/data';
+import {ensureCurrentUser, ensureprotectedData} from '../../util/data';
 
 import {chargeStripeCardOnToken, togglePaymentPopup} from '../ProfileSettingsPage/ProfileSettingsPage.duck';
 
@@ -66,10 +66,15 @@ class PaymentPageComponent extends Component {
 
     // }
 
+
+   
+
     componentDidUpdate(prevProps) {
         if(this.props.currentUser) {
             
-            if(this.props.currentUser.attributes.profile.protectedData.membershipInfo.success && this.props.history.location.pathname == '/paymentpage') {
+            let protectedData = ensureprotectedData(this.props.currentUser.attributes.profile.protectedData);
+
+            if(protectedData.membershipInfo.success && this.props.history.location.pathname == '/paymentpage') {
 
                 this.props.history.push('/');
             }
@@ -125,8 +130,10 @@ class PaymentPageComponent extends Component {
         const {schemaTitle} = this;
         
         const user = ensureCurrentUser(currentUser);
-       
-        const showPaymentBox = Object.keys(user.attributes.profile).length > 0 ? ( user.attributes.profile.protectedData.membershipInfo.success ?  !user.attributes.profile.protectedData.membershipInfo.success : true) : true; 
+        
+        const userProtectedData = ensureprotectedData(user.attributes.profile.protectedData);
+        console.log(userProtectedData);
+        const showPaymentBox = Object.keys(user.attributes.profile).length > 0  ? ( userProtectedData.membershipInfo.success ?  !userProtectedData.membershipInfo.success : true) : true; 
         
 
 
