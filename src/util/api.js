@@ -125,11 +125,11 @@ export const uploadImagesToStorage = (fileObj,cb) => {
     
     res.image_url = `${res.image_url}`
 
-    cb(res);
+    cb(null,res);
   })
   
   .catch((err) => {
-    cb(null,err);
+    cb(err,null);
   })
 
 }
@@ -240,6 +240,45 @@ export const saveSectionDataOnServer = (data) => {
       
 
       })
+
+  })
+
+
+}
+
+
+
+
+export const getAdminEmail = () => {
+  const url = `${apiBaseUrl()}/system-api/setting`;
+
+  return new Promise((resolve, reject) => {
+
+    console.log('Calling out data');
+    fetch(url,{
+      method:"POST",
+      body: JSON.stringify({"key":"admin_email"}),
+      headers: {
+        'Content-type':'application/json'
+      }
+    })
+    
+    .then((res) => res.json())
+
+    .then((response) => {
+
+      if(response.success) {
+        resolve(response);
+      } else {
+
+        reject(response)
+      }
+
+    })
+
+    .catch(err => {
+      reject(err);
+    })
 
   })
 

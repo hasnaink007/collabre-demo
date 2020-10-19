@@ -26,8 +26,8 @@ import { matchPathname } from './util/routes';
 import * as sample from './util/sample';
 import * as apiUtils from './util/api';
 import config from './config';
-import { authInfo } from './ducks/Auth.duck';
-import { fetchCurrentUser } from './ducks/user.duck';
+import { authInfo, confirmIsAdmin } from './ducks/Auth.duck';
+import { fetchCurrentUser, fetchAdminEmail } from './ducks/user.duck';
 import routeConfiguration from './routeConfiguration';
 import * as log from './util/log';
 import { LoggingAnalyticsHandler, GoogleAnalyticsHandler } from './analytics/handlers';
@@ -42,12 +42,21 @@ const render = (store, shouldHydrate) => {
   const info = authInfoLoaded ? Promise.resolve({}) : store.dispatch(authInfo());
   info
     .then(() => {
-      store.dispatch(fetchCurrentUser());
-      if (shouldHydrate) {
-        ReactDOM.hydrate(<ClientApp store={store} />, document.getElementById('root'));
-      } else {
-        ReactDOM.render(<ClientApp store={store} />, document.getElementById('root'));
-      }
+      store.dispatch(fetchCurrentUser()).then(() => {
+        store.dispatch(confirmIsAdmin());
+      });
+      store.dispatch(fetchAdminEmail()).then(() => {
+
+        
+
+        if (shouldHydrate) {
+          ReactDOM.hydrate(<ClientApp store={store} />, document.getElementById('root'));
+        } else {
+          ReactDOM.render(<ClientApp store={store} />, document.getElementById('root'));
+        }
+
+      })     
+    
     })
     .catch(e => {
       log.error(e, 'browser-side-render-failed');

@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import PropTypes from 'prop-types'
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
-import {getSectionsData, updateSectionsData} from './ManagePage.duck';
+import {getSectionsData, updateSectionsData, uploadImageToServer} from './ManagePage.duck';
 
 import {
     Page,
@@ -71,7 +71,7 @@ class ManagePageComponent extends Component {
 
     handleSubmit = (values, structure) => {
         // console.log(values)
-        console.log(structure)
+        // console.log(structure)
         let formData = []
 
         structure.forEach( (section, s_index) =>{
@@ -95,15 +95,16 @@ class ManagePageComponent extends Component {
 
                 item_structure.label = values[`label_${s_index}_${item_index}`] || ''
                 item_structure.url = values[`url_${s_index}_${item_index}`] || ''
-
+                item_structure.image = item.image;
                 section_structure.items.push(item_structure)
             })
 
             formData.push(section_structure)
         })
 
-        console.log(formData)
+        // console.log(formData)
         const {saveSectionsData} = this.props
+        console.log(formData);
         saveSectionsData(formData)
         // updateSectionsData(formData)
     }
@@ -130,6 +131,8 @@ class ManagePageComponent extends Component {
             ]*/
 
 
+    
+
 
     render() {
         
@@ -142,7 +145,10 @@ class ManagePageComponent extends Component {
         } = this;
 
         const {
-            sections
+            sections,
+            uploadImageOnServer,
+            uploadedImages
+
         } = this.props;
         
 
@@ -163,11 +169,9 @@ class ManagePageComponent extends Component {
                         <ManageSettingsForm 
                             onFormSubmit={this.handleSubmit}
                             sections={sections}
+                            uploadImage={uploadImageOnServer}
+                            uploadedImages={uploadedImages} 
                         />
-
-                        <button onClick={(event) => { testUpdate()}} > 
-                            Test Data Update
-                        </button>
 
                     </div>
 
@@ -200,7 +204,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         loadInitialData: () => {dispatch(getSectionsData())},
-        saveSectionsData: (data) => {dispatch(updateSectionsData(data))}
+        saveSectionsData: (data) => {dispatch(updateSectionsData(data))},
+        uploadImageOnServer: (data) => {dispatch(uploadImageToServer(data))}
 
     }
 }

@@ -34,6 +34,17 @@ const isPaymentDone = props => {
   // return true;
 }
 
+const isSiteAdminOnly = props => {
+
+  const {isAdmin} = props;
+
+  if(props.route.adminOnly) {
+    return isAdmin; 
+  } else {
+    return true;
+  }
+}
+
 const callLoadData = props => {
   const { match, location, route, dispatch, logoutInProgress } = props;
   const { loadData, name } = route;
@@ -121,11 +132,13 @@ class RouteComponentRenderer extends Component {
     const paymentRoute = "PaymentPage";
     
     const paymentDone = isPaymentDone(this.props);
+
+    const siteAdminOnly = isSiteAdminOnly(this.props);
     // console.log(paymentDone);
     if(canShow) {
 
       
-      return paymentDone ? (
+      return paymentDone && siteAdminOnly ? (
         <RouteComponent params={match.params} location={location} />
       ) :( 
         // <RouteComponent params={match.params} location={location} />
@@ -166,7 +179,7 @@ RouteComponentRenderer.propTypes = {
 };
 
 const Routes = (props, context) => {
-  const { isAuthenticated, logoutInProgress, staticContext, dispatch, routes, paymentStatus } = props;
+  const { isAuthenticated, logoutInProgress, staticContext, dispatch, routes, paymentStatus, isAdmin } = props;
   
   const toRouteComponent = route => {
     const renderProps = {
@@ -176,6 +189,7 @@ const Routes = (props, context) => {
       staticContext,
       dispatch,
       paymentStatus,
+      isAdmin
     };
 
     // By default, our routes are exact.
@@ -224,9 +238,9 @@ Routes.propTypes = {
 
 const mapStateToProps = state => {
   
-  const { isAuthenticated, logoutInProgress } = state.Auth;
+  const { isAuthenticated, logoutInProgress, isAdmin } = state.Auth;
   const paymentStatus = state.user.paymentStatus;
-  return { isAuthenticated, logoutInProgress , paymentStatus: paymentStatus};
+  return { isAuthenticated, logoutInProgress , paymentStatus: paymentStatus, isAdmin};
 };
 
 // Note: it is important that the withRouter HOC is **outside** the

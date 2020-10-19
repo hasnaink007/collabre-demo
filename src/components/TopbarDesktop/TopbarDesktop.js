@@ -35,6 +35,7 @@ const TopbarDesktop = props => {
     onLogout,
     onSearchSubmit,
     initialSearchFormValues,
+    isAdmin
   } = props;
   const [mounted, setMounted] = useState(false);
 
@@ -71,13 +72,18 @@ const TopbarDesktop = props => {
     </NamedLink>
   ) : null;
 
+
   const currentPageClass = page => {
     const isAccountSettingsPage =
       page === 'AccountSettingsPage' && ACCOUNT_SETTINGS_PAGES.includes(currentPage);
     return currentPage === page || isAccountSettingsPage ? css.currentPage : null;
   };
 
-  const profileMenu = authenticatedOnClientSide ? (
+  const profileMenu = () => { 
+
+    const isAdminClass = isAdmin ? css.show : css.hidden;
+    
+    return authenticatedOnClientSide ? (
     <Menu>
       <MenuLabel className={css.profileMenuLabel} isOpenClassName={css.profileMenuIsOpen}>
         <Avatar className={css.avatar} user={currentUser} disableProfileLink />
@@ -117,6 +123,20 @@ const TopbarDesktop = props => {
             <FormattedMessage id="TopbarDesktop.accountSettingsLink" />
           </NamedLink>
         </MenuItem>
+
+        {/* {ManageLandingPageLink} */}
+
+               
+        <MenuItem key="ManageSettingsPage">
+          <NamedLink
+            className={classNames(css.yourListingsLink, currentPageClass('ManagePage'), isAdminClass)}
+            name="ManagePage"
+          >
+            <span className={css.menuItemBorder} />
+            Manage Settings
+          </NamedLink>
+        </MenuItem>
+
         <MenuItem key="logout">
           <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
             <span className={css.menuItemBorder} />
@@ -126,6 +146,7 @@ const TopbarDesktop = props => {
       </MenuContent>
     </Menu>
   ) : null;
+  }
 
   const signupLink = isAuthenticatedOrJustHydrated ? null : (
     <NamedLink name="SignupPage" className={css.signupLink}>
@@ -178,7 +199,7 @@ const TopbarDesktop = props => {
       {listingLink}
       {createListingLink}
       {inboxLink}
-      {profileMenu}
+      {profileMenu()}
       {signupLink}
       {loginLink}
     </nav>

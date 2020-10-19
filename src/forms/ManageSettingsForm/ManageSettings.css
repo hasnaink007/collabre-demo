@@ -1,17 +1,32 @@
 .setContainer{
-	/*border-left: 3px solid #f72a85;*/
-	border-bottom: 1px solid #ccc;	
-	/*margin-left: 20px;*/
-	padding: 20px;
-	margin-bottom: 20px;
-	position: relative;
+	    /* border-left: 3px solid #f72a85; */
+    /* border-bottom: 1px solid #ccc; */
+    /* margin-left: 20px; */
+	padding: 35px 20px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    margin: 35px 0px;
+    background: #FFF;
+    border-radius: 14px;
+    box-shadow: 0px 0px 10px -2px #9c9c9c;
 }
 .itemsContainer{
 	/*padding: 20px;*/
-	margin-left: 20px;
-	border-left: 3px solid #f72a85;
+	/* margin-left: 20px; */
+	/* border-left: 3px solid #f72a85; */
 	margin-bottom: 10px;
 }
+
+.itemLabel {
+	margin-bottom: 20px;
+}
+
+
+.sectionInput {
+	margin: 20px 0px 20px 7px;
+}
+
+
 .addItemBtn{
 	background: #2ecc71;
 	color: #fff;
@@ -20,21 +35,22 @@
 	display: block;
 	margin-left: auto;
 	cursor: pointer;
-	font-size: 12px;
-	padding: 0px 20px;
+	font-size: 15px;
+    border-radius: 3px;
+    padding: 4px 20px;
+	font-weight: 500;
 }
 .removeBtn{
-	background: red;
 	border: 0px;
-	color: #fff;
-	line-height: 15px;
-	font-size: 11px;
-	cursor: pointer;
+    color: #b3b3b3;
+    line-height: 15px;
+    font-size: 22px;
+    cursor: pointer;
 }
 .removeItem{
 	position: absolute;
-	left: 0px;
-	top: 0px;
+    left: 5px;
+    top: 11px;
 }
 .item_cols{
 	display: grid;
@@ -46,15 +62,16 @@
 	align-items: center;
 	justify-content: space-between;
 }
-.singl_section{
-	border-bottom: 1px solid #00d4ff;
+.single_section{
+	/* border-bottom: 1px solid #00d4ff; */
 	margin-bottom: 15px;
-	border-right: 3px solid #2ecc71;
-	margin-top: 35px;
+	/* border-right: 3px solid #2ecc71; */
+	margin: 35px 0px;
+	padding: 20px;
+	background: #f7f7f7;
 }
 .item_col1, .section_fields{
 	display: grid;
-	grid-gap: 20px;
 }
 .item_col1 input{
 	padding-bottom: 0px;
