@@ -40,11 +40,12 @@ router.use(bodyparser.json());
 
 // });
 
-router.get('/setting',(req,res) => {
-console.log(req.body.key);
+router.post('/setting',(req,res) => {
+// console.log(req.body.key);
+        
     Preferences.findOne({meta_key:req.body.key}, (err, document) => {
         if(err) res.send({...err,success:false,message:"Key not found"})
-        console.log(document);
+        // console.log(document);
         if(!document) res.send({success:false,message:"no record found."}).status(200);
         
         res.status(200).send({...document._doc, success:true});

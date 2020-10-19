@@ -191,6 +191,7 @@ const routeConfiguration = () => {
       path: '/manage-page',
       name: 'ManagePage',
       auth: true,
+      adminOnly:true,
       authPage: 'LoginPage',
       component: props => <ManagePage {...props} />,
     },

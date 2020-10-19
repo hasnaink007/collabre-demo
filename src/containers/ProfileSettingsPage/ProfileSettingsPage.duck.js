@@ -298,7 +298,7 @@ export function uploadSignupImage(actionPayload) {
       file:form_data,
       fileID:actionPayload.id,
       fieldIndex:actionPayload.index
-    },(data,err) => {
+    },(err,data) => {
       if(err) extraImageErorr(err);      
       if(data) {
         console.log('final Data',data);

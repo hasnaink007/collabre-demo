@@ -6,7 +6,7 @@ import * as log from '../util/log';
 import { authInfo } from './Auth.duck';
 import { stripeAccountCreateSuccess } from './stripeConnectAccount.duck';
 import { util as sdkUtil } from '../util/sdkLoader';
-
+import {getAdminEmail} from '../util/api';
 // ================ Action types ================ //
 
 export const CURRENT_USER_SHOW_REQUEST = 'app/user/CURRENT_USER_SHOW_REQUEST';
@@ -41,6 +41,11 @@ export const SEND_VERIFICATION_EMAIL_ERROR = 'app/user/SEND_VERIFICATION_EMAIL_E
 
 export const PAYMENT_INFORMATION = 'app/user/PAYMENT_INFORMATION';
 
+
+export const FETCH_ADMIN_EMAIL_SUCCESS = 'app/user/FETCH_ADMIN_EMAIL';
+export const FETCH_ADMIN_EMAIL_ERROR = 'app/user/FETH_ADMIN_EMAIL_ERROR';
+
+
 // ================ Reducer ================ //
 
 const mergeCurrentUser = (oldCurrentUser, newCurrentUser) => {
@@ -70,6 +75,8 @@ const initialState = {
   sendVerificationEmailError: null,
   currentUserListing: null,
   currentUserListingFetched: false,
+  site_admin_email: null,
+  admin_email_error:false
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -149,6 +156,15 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         paymentStatus:payload
       }
+
+    case FETCH_ADMIN_EMAIL_SUCCESS:
+      return {
+        ...state,
+        site_admin_email:payload.email 
+      }
+
+    case FETCH_ADMIN_EMAIL_ERROR:
+      return {...state,...payload}
 
     default:
       return state;
@@ -254,6 +270,35 @@ export const paymentInformation = (data) => {
     payload: data
   }
 }
+
+
+
+export const adminEmailSuccess = (data) => {
+
+    const {meta_value} = data;
+
+    let admin_email = false;
+
+    if(meta_value != '') {
+      admin_email = meta_value;
+    }
+
+    return {
+      type: FETCH_ADMIN_EMAIL_SUCCESS,
+      payload: {email: admin_email}
+    }
+}
+
+
+export const adminEmailError = (data) => {
+
+  return {
+    type:FETCH_ADMIN_EMAIL_ERROR,
+    payload: {site_admin_email:'',admin_email_error:true}
+  }
+
+}
+
 
 // ================ Thunks ================ //
 
@@ -417,3 +462,21 @@ export const sendVerificationEmail = () => (dispatch, getState, sdk) => {
     .then(() => dispatch(sendVerificationEmailSuccess()))
     .catch(e => dispatch(sendVerificationEmailError(storableError(e))));
 };
+
+
+export const fetchAdminEmail = () => (dispatch,getState,sdk ) => {
+
+    // console.log();
+  return getAdminEmail().then((data) => {
+
+    console.log(data);
+    dispatch(adminEmailSuccess(data));
+
+  })
+
+  .catch(err => {
+    dispatch(adminEmailError(err))
+  })
+
+
+}

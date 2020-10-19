@@ -26,6 +26,13 @@ export const SIGNUP_ERROR = 'app/Auth/SIGNUP_ERROR';
 // E.g. src/reducers.js clears store as a consequence
 export const USER_LOGOUT = 'app/USER_LOGOUT';
 
+
+// Verifies if the currrent logged in user is an admin or not
+
+export const IS_ADMIN_SUCCESS = 'app/IS_ADMIN_SUCCESS';
+export const IS_ADMIN_ERROR = 'app/IS_ADMIN_ERROR';
+
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -48,6 +55,7 @@ const initialState = {
   // signup
   signupError: null,
   signupInProgress: false,
+  isAdmin:false,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -89,6 +97,12 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, signupInProgress: false };
     case SIGNUP_ERROR:
       return { ...state, signupInProgress: false, signupError: payload };
+    
+    case IS_ADMIN_SUCCESS:
+      return {...state, ...payload}
+
+    case IS_ADMIN_ERROR:
+      return {...state,...payload}
 
     default:
       return state;
@@ -120,6 +134,25 @@ export const signupSuccess = () => ({ type: SIGNUP_SUCCESS });
 export const signupError = error => ({ type: SIGNUP_ERROR, payload: error, error: true });
 
 export const userLogout = () => ({ type: USER_LOGOUT });
+
+
+
+export const updateIsAdminStatus = (data) => {
+
+  return {
+    type:IS_ADMIN_SUCCESS,
+    payload: data
+  }
+
+}
+
+
+export const isAdminError = (err,data) => {
+  return {
+    type: IS_ADMIN_ERROR,
+    payload:data
+  }
+}
 
 // ================ Thunks ================ //
 
@@ -203,3 +236,50 @@ export const signup = params => (dispatch, getState, sdk) => {
       });
     });
 };
+
+
+
+
+
+export const confirmIsAdmin = () => {
+
+  return (dispatch, getState,sdk) => {
+
+
+    const currentState = getState();
+
+    try {
+      if(currentState.Auth.isAuthenticated) {
+        if(currentState.user.currentUser.attributes.emailVerified) {
+
+          if(currentState.user.currentUser.attributes.email === currentState.user.site_admin_email) {
+
+            // Dispatch is Admin to true
+
+            dispatch(updateIsAdminStatus({isAdmin:true}));
+
+          }
+
+
+        } else {  
+          // user email not verified push false to isAdmin
+          dispatch(isAdminError({isAdmin:false}));
+        }
+
+
+      } else {
+        
+        // user is logged out, push isAdmin to false
+        dispatch(isAdminError({isAdmin:false}));
+
+
+      }
+    }
+
+    catch(err) {
+      dispatch(isAdminError(err,{isAdmin:false}));
+    }
+
+  }
+
+}

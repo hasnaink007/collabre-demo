@@ -30,6 +30,7 @@ export const TopbarContainerComponent = props => {
     sendVerificationEmailInProgress,
     sendVerificationEmailError,
     onResendVerificationEmail,
+    isAdmin,
     ...rest
   } = props;
 
@@ -54,6 +55,7 @@ export const TopbarContainerComponent = props => {
       sendVerificationEmailInProgress={sendVerificationEmailInProgress}
       sendVerificationEmailError={sendVerificationEmailError}
       showGenericError={hasGenericError}
+      isAdmin={isAdmin}
       {...rest}
     />
   );
@@ -98,7 +100,7 @@ TopbarContainerComponent.propTypes = {
 
 const mapStateToProps = state => {
   // Topbar needs isAuthenticated
-  const { isAuthenticated, logoutError, authScopes } = state.Auth;
+  const { isAuthenticated, logoutError, authScopes, isAdmin } = state.Auth;
   // Topbar needs user info.
   const {
     currentUser,
@@ -110,6 +112,9 @@ const mapStateToProps = state => {
     sendVerificationEmailInProgress,
     sendVerificationEmailError,
   } = state.user;
+
+
+
   const hasGenericError = !!(logoutError || hasCurrentUserErrors(state));
   return {
     authInProgress: authenticationInProgress(state),
@@ -124,6 +129,7 @@ const mapStateToProps = state => {
     sendVerificationEmailInProgress,
     sendVerificationEmailError,
     hasGenericError,
+    isAdmin
   };
 };
 

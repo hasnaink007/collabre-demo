@@ -64,8 +64,9 @@ class SignupImageField extends Component {
                     
                 
                return this.props.imageUploadState.find((value) => {
-
+                    
                     if(value.index == this.props.index) {
+                        
                         return true;
                     }
 

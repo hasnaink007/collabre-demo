@@ -88,6 +88,8 @@ const AddImages = props => {
     loadFromUrl,
   } = props;
   const classes = classNames(css.root, className);
+
+  // console.log('Add Images',images);
   return (
     <div className={classes}>
       {images.map((image, index) => {

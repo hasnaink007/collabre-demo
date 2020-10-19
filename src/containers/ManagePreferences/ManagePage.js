@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import PropTypes from 'prop-types'
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
-import {getSectionsData, updateSectionsData} from './ManagePage.duck';
+import {getSectionsData, updateSectionsData, uploadImageToServer} from './ManagePage.duck';
 
 import {
     Page,
@@ -73,6 +73,70 @@ class ManagePageComponent extends Component {
     }
 
 
+    handleSubmit = (values, structure) => {
+        // console.log(values)
+        // console.log(structure)
+        let formData = []
+
+        structure.forEach( (section, s_index) =>{
+            // console.log(section)
+            
+            let section_structure = {
+                    title: '',
+                    description: '',
+                    items: []
+                }
+                
+            section_structure.title = values[`s_title_${s_index}`] || ''
+            section_structure.description = values[`s_desc_${s_index}`] || ''
+
+            section.items.forEach( (item, item_index) =>{
+                let item_structure = {
+                    label: '',
+                    url: '',
+                    image: ''
+                }
+
+                item_structure.label = values[`label_${s_index}_${item_index}`] || ''
+                item_structure.url = values[`url_${s_index}_${item_index}`] || ''
+                item_structure.image = item.image;
+                section_structure.items.push(item_structure)
+            })
+
+            formData.push(section_structure)
+        })
+
+        // console.log(formData)
+        const {saveSectionsData} = this.props
+        console.log(formData);
+        saveSectionsData(formData)
+        // updateSectionsData(formData)
+    }
+
+
+
+    /*sections = [
+                {
+                    name:'section_1',
+                    desc: 'descriptipn_1',
+                    items: []
+                },
+                {
+                    name:'section_3',
+                    desc: 'descriptipn_1',
+                    items: [
+                        {
+                            label: 'something',
+                            url: 'someURL',
+                            image: 'someImage'
+                        }
+                    ]
+                }
+            ]*/
+
+
+    
+
 
     render() {
         
@@ -85,7 +149,10 @@ class ManagePageComponent extends Component {
         } = this;
 
         const {
-            sections
+            sections,
+            uploadImageOnServer,
+            uploadedImages
+
         } = this.props;
         
 
@@ -104,13 +171,11 @@ class ManagePageComponent extends Component {
                     <div className={css.formWrapper}>
 
                         <ManageSettingsForm 
-                            onSubmitSettings={handleSubmit}
+                            onFormSubmit={this.handleSubmit}
                             sections={sections}
+                            uploadImage={uploadImageOnServer}
+                            uploadedImages={uploadedImages} 
                         />
-
-                        <button onClick={(event) => { testUpdate()}} > 
-                            Test Data Update
-                        </button>
 
                     </div>
 
@@ -143,7 +208,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         loadInitialData: () => {dispatch(getSectionsData())},
-        saveSectionsData: (data) => {dispatch(updateSectionsData(data))}
+        saveSectionsData: (data) => {dispatch(updateSectionsData(data))},
+        uploadImageOnServer: (data) => {dispatch(uploadImageToServer(data))}
 
     }
 }

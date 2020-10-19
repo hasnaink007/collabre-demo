@@ -1,6 +1,7 @@
 import { 
     getSectionsDataFromServer,
-    saveSectionDataOnServer
+    saveSectionDataOnServer,
+    uploadImagesToStorage
 } from '../../util/api';
 
 
@@ -17,10 +18,20 @@ const LOAD_INITIAL_DATA_SUCCESS = '/app/ManagePage/LOAD_INITIAL_DATA_SUCCESS';
 const LOAD_INITIAL_DATA_ERROR = '/app/ManagePage/LOAD_INITIAL_DATA_ERROR';
 
 
+
+const UPLOAD_IMAGE_REQUEST = '/app/ManagePage/UPLOAD_IMAGE_REQUEST';
+const UPLOAD_IMAGE_SUCCESS = '/app/ManagePage/UPLOAD_IMAGE_SUCCESS';
+const UPLOAD_IMAGE_ERROR = '/app/ManagePage/UPLOAD_IMAGE_ERROR';
+
+
+
+
 const initialState = {
     sections: [],
     saveInProgress:false,
     fetchInProgress:false,
+    uploadedImages: {}
+
 }
 
 
@@ -30,6 +41,7 @@ const managePageReducer = (state = initialState , action = {}) => {
 
     const {payload,type} = action;
 
+    let newObj = {};
 
     switch (type) {
         case SAVE_SECTIONS_DATA_REQUEST:
@@ -46,6 +58,17 @@ const managePageReducer = (state = initialState , action = {}) => {
 
         case LOAD_INITIAL_DATA_ERROR:
             return {...state,...payload}
+
+        case UPLOAD_IMAGE_REQUEST:
+            
+            newObj = {uploadedImages: {...state.uploadedImages,...payload}};
+            // console.log(newObj);
+            return {...state,...newObj};
+
+        case UPLOAD_IMAGE_SUCCESS:
+            newObj = {uploadedImages: {...state.uploadedImages,...payload}};
+            // console.log(newObj);
+            return {...state,...newObj};
 
         default:
             return state;
@@ -111,6 +134,45 @@ export const loadInitialDataError = (payload) => {
 }
 
 
+
+
+
+export const ImageUploadingRequest = (payload) => {
+
+    const uploadState = {[payload.index] : 'uploading'};
+
+    return {
+        type: UPLOAD_IMAGE_REQUEST,
+        payload: uploadState
+    }
+
+}
+
+
+
+export const ImageUploadingSuccess = (payload) => {
+
+    const uploadState = {[payload.index] : payload.url} 
+    return {
+        type: UPLOAD_IMAGE_SUCCESS,
+        payload: uploadState
+    }
+
+}
+
+
+
+export const ImageUploadingError = (payload) => {
+    throw new Error(payload);
+    return {
+        type: UPLOAD_IMAGE_ERROR,
+        payload: {}
+    }
+
+}
+
+
+
 /* ============== Thunks =============== */ 
 
 
@@ -155,3 +217,55 @@ export const updateSectionsData = (sectionData) => {
     }
     
 }   
+
+
+export const uploadImageToServer = (data) => {
+
+    console.log('Called Component');
+    return (dispatch,getState,sdk) => {
+
+        const {id, file, index} = data;
+
+        dispatch(ImageUploadingRequest(data));
+
+        // const form_data = new FormData();
+        // // console.log(actionPayload);
+        // form_data.append('extraImage',actionPayload.file);
+        // form_data.append('fileId',actionPayload.id);
+    
+        // // debugger;
+    
+        // uploadImagesToStorage({
+        //   file:form_data,
+        //   fileID:actionPayload.id,
+        //   fieldIndex:actionPayload.index
+        // }
+
+        const formData = new FormData();
+
+        formData.append('fileId',id);
+        formData.append('extraImage',file);
+
+
+
+
+        uploadImagesToStorage({
+            file:formData,
+            fileID:id,
+            fieldIndex:index
+        }, (err,res) => {
+            if(err) { dispatch(ImageUploadingError(err)); return; }
+
+            // console.log(res);
+            dispatch(ImageUploadingSuccess({
+                index: index,
+                url: res.image_url
+            }));
+
+
+
+        })
+
+    }
+
+}
